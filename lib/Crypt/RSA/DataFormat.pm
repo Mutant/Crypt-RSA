@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: DataFormat.pm,v 1.10 2001/04/06 18:34:40 vipul Exp $
+## $Id: DataFormat.pm,v 1.11 2001/04/09 23:07:26 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA::DataFormat; 
@@ -19,7 +19,7 @@ use Carp;
 require Exporter;
 @ISA = qw(Exporter);
 
-@EXPORT_OK = qw(i2osp os2ip h2osp octet_xor bitsize 
+@EXPORT_OK = qw(i2osp os2ip h2osp octet_xor octet_len bitsize 
                 generate_random_octet mgf1 steak);
 
 
@@ -81,6 +81,11 @@ sub bitsize ($) {
 }
 
 
+sub octet_len { 
+    return pari2num(floor(PARI((bitsize(shift)+7)/8)));
+}
+
+
 sub octet_xor { 
     my ($a, $b) = @_; my @xor;
     my @ba = split //, unpack "B*", $a; 
@@ -114,6 +119,7 @@ sub mgf1 {
 
 sub steak { 
     my ($text, $blocksize) = @_; 
+    print "blocksize: $blocksize\n";
     my $textsize = length($text);
     my $chunkcount = $textsize % $blocksize 
         ? int($textsize/$blocksize) + 1 : $textsize/$blocksize;
@@ -158,13 +164,18 @@ B<Strength> parameter.
 
 Returns the length of the B<Integer> in bits.
 
+=item B<octet_len> Integer
+
+Returns the octet length of the integer. If the length is not a whole
+number, the fractional part is dropped to make it whole.
+
 =item B<octet_xor> String1, String2
 
 Returns the result of B<String1> XOR B<String2>.
 
 =item B<steak> String, Length 
 
-Returns an array of segments of length B<Length> from B<String>.  The final 
+Returns an array of segments of length B<Length> from B<String>. The final
 segment can be smaller than B<Length>.
 
 =back

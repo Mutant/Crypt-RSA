@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Debug.pm,v 1.8 2001/04/06 18:34:40 vipul Exp $
+## $Id: Debug.pm,v 1.9 2001/04/09 22:21:49 vipul Exp $
 
 package Crypt::RSA::Debug; 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -15,7 +15,7 @@ use vars qw(@ISA @EXPORT_OK);
 require Exporter;
 @ISA = qw(Exporter);
 
-@EXPORT_OK = qw(debug); 
+@EXPORT_OK = qw(debug debuglevel); 
 
 my $DEBUG = 0; 
 
@@ -35,6 +35,15 @@ sub debug{
     $sub =~ s/[\x7f-\xfe]/_/g;
     print "$sub\n";
 }
+
+
+sub debuglevel { 
+
+    my ($level) = shift;
+    $DEBUG = $level;
+
+}
+
 
 =head1 NAME
 

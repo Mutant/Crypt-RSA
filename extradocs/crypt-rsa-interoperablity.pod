@@ -1,6 +1,6 @@
 =head1 NAME
 
-Crypt::RSA Interoperability Chart.
+Interoperability Chart for Crypt::RSA.
 
 =head1 SYNOPSIS
 

@@ -18,7 +18,7 @@ my $i = 0;
 my $oaep = new Crypt::RSA::ES::PKCS1v15;
 my $message = "My plenteous joys, Wanton in fullness, seek to hide themselves.";
 my $keychain = new Crypt::RSA::Key;
-my ($pub, $priv) = $keychain->generate ( Size => 1024, Password => 'xx', Identity => 'xx', Verbosity => 1 );
+my ($pub, $priv) = $keychain->generate ( Size => 1020, Password => 'xx', Identity => 'xx', Verbosity => 1 );
 die $keychain->errstr() if $keychain->errstr();
 
 my $ct = $oaep->encrypt (Key => $pub, Message => $message);

@@ -6,20 +6,20 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.1 2001/03/31 07:37:25 vipul Exp $
+## $Id: PSS.pm,v 1.2 2001/04/09 23:07:29 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SS::PSS;
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
-use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor generate_random_octet mgf1);
+use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor generate_random_octet mgf1);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.1 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.2 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
@@ -38,7 +38,7 @@ sub new {
 sub sign { 
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message};
-    my $k = int(floor(bitsize($key->n)/8));  
+    my $k = octet_len ($key->n);
     my $salt = generate_random_octet ($self->{hlen});
     my $em = $self->encode ($M, $salt, $k-1);
     my $m = os2ip ($em);
@@ -53,7 +53,7 @@ sub verify_with_salt {
     my ($self, %params) = @_;
     my $key = $params{Key}; my $M = $params{Message}; 
     my $S = $params{Signature}; my $salt = $params{Salt};
-    my $k = int(floor(bitsize($key->n)/8));  
+    my $k = octet_len ($key->n);
     my $em; 
     unless ($em = $self->encode ($M, $salt, $k-1)) { 
         return if $self->errstr eq "Message too long.";
@@ -74,7 +74,7 @@ sub verify_with_salt {
 sub verify { 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $M = $params{Message}; my $S = $params{Signature}; 
-    my $k = int(floor(bitsize($key->n)/8));  
+    my $k = octet_len ($key->n);
     my $s = os2ip ($S);
     my $m = $self->{primitives}->core_verify (Key => $key, Signature => $s) || 
         $self->error ("Invalid signature.", \$M, \$S, $key, \%params);

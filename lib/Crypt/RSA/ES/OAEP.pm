@@ -6,14 +6,14 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.18 2001/03/31 08:06:33 vipul Exp $
+## $Id: OAEP.pm,v 1.20 2001/04/09 23:07:28 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::ES::OAEP; 
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
-use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor generate_random_octet mgf1);
+use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor generate_random_octet mgf1 octet_len);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug      qw(debug);
 use Digest::SHA1           qw(sha1);
@@ -21,7 +21,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.18 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.20 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -45,7 +45,7 @@ sub new {
 sub encrypt { 
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message};
-    my $k = int(floor(bitsize($key->n)/8));  debug ("k: $k");
+    my $k = octet_len ($key->n);  debug ("octet_len of modulus: $k");
     my $em = $self->encode ($M, $self->{P}, $k-1) || 
         return $self->error ($self->errstr, \$M, $key, \%params);
     my $m = os2ip ($em);
@@ -58,7 +58,7 @@ sub encrypt {
 sub decrypt { 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $C = $params{Cyphertext}; 
-    my $k = int(floor(bitsize($key->n)/8));  
+    my $k = octet_len ($key->n);  
     my $c = os2ip ($C);
     if (bitsize($c) > bitsize($key->n)) { 
         return $self->error ("Decryption error.", $key, \%params) 
@@ -156,9 +156,18 @@ sub mgf {
 }
 
 
+# should be able to call this as a class method.
 sub version {
     my $self = shift;
     return $self->{VERSION};
+}
+
+
+sub ident { 
+
+# class method
+# return distinguished name, version, eblocksize, dblocksize 
+
 }
 
 

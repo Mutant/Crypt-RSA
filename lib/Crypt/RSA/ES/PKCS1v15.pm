@@ -6,21 +6,21 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.3 2001/04/07 16:53:40 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.5 2001/04/09 23:07:28 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
-use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp generate_random_octet);
+use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp generate_random_octet);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug      qw(debug);
 use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.3 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -37,7 +37,7 @@ sub new {
 sub encrypt { 
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message};
-    my $k = int(floor(bitsize($key->n)/8));  debug ("k: $k");
+    my $k = octet_len ($key->n);  debug ("octet_len of modulus: $k");
     my $em = $self->encode ($M, $k-1) || 
         return $self->error ($self->errstr, \$M, $key, \%params);
     my $m = os2ip ($em);
@@ -50,7 +50,7 @@ sub encrypt {
 sub decrypt { 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $C = $params{Cyphertext}; 
-    my $k = int(floor(bitsize($key->n)/8));  
+    my $k = octet_len ($key->n);
     my $c = os2ip ($C);
     if (bitsize($c) > bitsize($key->n)) { 
         return $self->error ("Decryption error.", $key, \%params) 
@@ -106,7 +106,7 @@ Crypt::RSA::ES::PKCS1v15 - PKCS #1 v1.5 padded encryption scheme based on RSA.
 
 =head1 SYNOPSIS
 
-    my $pkcs = new Crypt::RSA::ES::PKCS1_v1_5; 
+    my $pkcs = new Crypt::RSA::ES::PKCS1v15; 
 
     my $ct = $pkcs->encrypt( Key => $key, Message => $message ) || 
                 die $pkcs->errstr; 

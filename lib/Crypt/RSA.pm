@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.34 2001/04/07 16:53:39 vipul Exp $
+## $Id: RSA.pm,v 1.36 2001/04/09 23:07:25 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -18,26 +18,43 @@ use Crypt::RSA::Errorhandler;
 use Crypt::RSA::Key;
 use Crypt::RSA::ES::OAEP;
 use Crypt::RSA::SS::PSS;
-use Crypt::RSA::DataFormat qw(bitsize steak);
+use Crypt::RSA::DataFormat qw(steak octet_len);
 use Crypt::RSA::Debug qw(debug);
 use Convert::ASCII::Armour;
 use Carp;
 use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.34 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.36 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
-    'ES'    => { Scheme  => "Crypt::RSA::ES::OAEP",
+    'ES'    => {  Scheme  => "Crypt::RSA::ES::OAEP",
                   Enoc    => 'n-42', # 42 octets less than size of n
                   Dnoc    => 'n-0', 
-                },
-    'SS'    => { Scheme  => "Crypt::RSA::SS::PSS",
+               },
+    'SS'    => {  Scheme  => "Crypt::RSA::SS::PSS",
                   Snoc    => '-1',   # infinite
-                  Dnoc    => '-1'    # infinite
-                },
+                  Dnoc    => '-1'   
+               },
 );
 
+my %ENCRYPTION_SCHEMES = (    
+            OAEP =>  { Module => "Crypt::RSA::ES::OAEP" },
+        PKCS1v21 =>  { Module => "Crypt::RSA::ES::OAEP" },
+        PKCS1v15 =>  { Module => "Crypt::RSA::ES::PKCS1v15" },
+);
+
+my %SIGNATURE_SCHEMES = ( 
+            OAEP =>  { Module => "Crypt::RSA::SS::OAEP" },
+        PKCS1v15 =>  { Module => "Crypt::RSA::SS::PKCS1v15", }
+);
+
+my %POST_PROCESSORS   = (  
+          Armour =>  { Module => "Convert::ASCII::Armour" },
+          Base64 =>  { Module => "Convert::ASCII::Armour", 
+                       Params => { Type => 'Base64' } },    
+);
+           
 
 sub new { 
 
@@ -78,9 +95,10 @@ sub encrypt {
     my $key               = $params{Key}; 
 
     my $blocksize;
-    my $k = ((bitsize ($key->n)) / 8); 
+    my $k = octet_len ($key->n);
     if ($$self{ES}{Enoc} =~ /\-(\d+)/) { 
-               $blocksize = $k - $1;
+        $blocksize = $k - $1;
+        return $self->error ("Keysize too small.", \$plaintext, \$key) if $blocksize < 1;
     }
 
     my $cyphertext;
@@ -118,7 +136,7 @@ sub decrypt {
         $cyphertext = $$decoded{Content}{Cyphertext}
     }
 
-    my $k = ((bitsize ($key->n)) / 8); 
+    my $k = octet_len ($key->n);
     # should be replaced by compute_blocksize( $k );
     my $blocksize = $k;  
 
@@ -183,8 +201,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.34 $ (Beta)
- $Date: 2001/04/07 16:53:39 $
+ $Revision: 1.36 $ (Beta)
+ $Date: 2001/04/09 23:07:25 $
 
 =head1 SYNOPSIS
 

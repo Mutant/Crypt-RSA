@@ -11,6 +11,9 @@
 use lib '../lib';
 use lib 'lib';
 use Crypt::RSA;
+use Crypt::RSA::Debug qw(debuglevel);
+
+debuglevel (1);
 
 print "1..8\n";
 my $i = 0;
@@ -50,7 +53,7 @@ my $plaintext =<<'EOM';
 
 EOM
 
-for my $keysize (qw(512 1024)) { 
+for my $keysize (qw(384 1024)) { 
 
     my ($pub, $pri) = $rsa->keygen ( 
                         Size      => $keysize, 

@@ -1,14 +1,29 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.13 2001/04/07 16:53:35 vipul Exp $
+           $Id: Changes,v 1.15 2001/04/09 23:07:22 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.36                                                        April 10, 2001 
+
+  * Modified Crypt::RSA::encrypt() to return an error when the keysize is
+    too small for use with the selected scheme.
+
+  * Modified Crypt::RSA ::ES::* and ::SS::* to work with keysizes 
+    that are not multiples of 8.
+
+  * Wrote ::DataFormat::octet_len() to computes the octet length of
+    an integer.
+
+  * Wrote exportable ::Debug::debuglevel(). Use debuglevel(1) to turn on
+    debugging.
+
 
 1.34                                                        April 7, 2001 
 
   * Wrote crypt-rsa-interoperablity.pod that contains the structure for a
     Crypt::RSA interoperability chart. Added an entry for RSAREF 2.0
-    signatures 
+    signatures and encryption
 
   * Support for decryption using the Chinese Remainder Threorum
     in ::Primitives::decrypt(). Patch by Benjamin Trott
