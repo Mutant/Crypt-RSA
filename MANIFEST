@@ -1,0 +1,34 @@
+
+# Files in Crypt-RSA bundle. 
+
+MANIFEST
+ARTISTIC
+TODO 
+
+Makefile.PL
+
+lib/Crypt/RSA.pm
+lib/Crypt/RSA/Errorhandler.pm
+lib/Crypt/RSA/DataFormat.pm
+lib/Crypt/RSA/Primitives.pm
+lib/Crypt/RSA/Key.pm
+lib/Crypt/RSA/Key/Public.pm
+lib/Crypt/RSA/Key/Private.pm
+lib/Crypt/RSA/Debug.pm
+lib/Crypt/RSA/EME/OAEP.pm
+lib/Crypt/RSA/SSA/PSS.pm
+
+t/00-errorhandler.t
+t/01-i2osp.t
+t/02-os2ip.t
+t/03-random_octet.t
+t/04-octet_xor.t
+t/05-primitives.t
+t/06-oaep.t
+t/07-pss.t
+t/08-secretkey.t
+t/09-publickey.t
+t/10-keygen.t
+
+# $Id: MANIFEST,v 1.9 2001/03/07 02:49:04 vipul Exp $ 
+

@@ -1,0 +1,98 @@
+
+
+                           TODO for Crypt::RSA
+            $Id: TODO,v 1.15 2001/03/07 01:19:47 vipul Exp $
+
+-------------------------------------------------------------------------------
+P No Task                                              Status
+- -- ------------------------------------------------  ------------------------
+   1 Implement "Optimal Asymetric Encryption" (OAEP)   Jan 01 2001  0130 
+     + oaep_encode()                                   Dec 25 2000  0000 
+     + oaep_decode()                                   Dec 25 2000  0025 
+     + oaep_encrypt()                                  Dec 25 2000  0100 
+     + oaep_decrypt()                                  Dec 25 2000  0100 
+     + implement octet_xor()                           Dec 26 2000  0245 
+   2 oaep_encrypt()/decrypt() should work with         Jan 01 2001  0130 
+     moduli of lengths that are not multiples
+     of 8.
+   3 SSLv3 compatability                               Postponed.
+*  4 Read/write SSH keys
+*  5 Choose a large `e' with Maurer's method
+   6 Move rsaparams() over to Crypt::RSA::Key          Not required.
+   7 Implement i2osp(), os2ip(), mgf1()                Dec 21 2000  0425 
+   8 Find & study PKCS #7 specification                Feb 19 2001  2345
+   9 Read/write PGP 2.6i/5.x and GPG keys
+     (Crypt::OpenPGP should do this, not us.)
+  10 A comprehensive test suite                        Mar 03 2001  1900 
+* 11 Implement decryption using the Chinese
+     Remainder Theorem (in core_decrypt()).
+* 12 Resolve endianness issues.
+  13 Move OAEP code to Crypt::RSA::EME::OAEP           Feb 12 2001  2000
+  14 Ensure n is exactly specified number of           Mar 06 2001  2315
+     bits
+*    + Modify Crypt::Primes::maurer() to accept 
+       an integer range instead of bitsize.
+  15 Better exception handling in oaep_decrypt()       Not required.
+     Cloak calls to os2ip/ip2os and core_decrypt()
+     in evals and croak with "Decryption Error"
+     if an exception is raised in these methods
+     (Suggestion by magister on #perl: 
+      Use DBI's error handling method) 
+* 16 Add support for Math::Pari bigints to 
+     Convert::ASN1. 
+  17 Add support for DER encoding in Convert::ASN1.    Postponed.
+  18 Replace mod2int with Math::Pari::lift()           Feb 14 2001  0300 
+  19 Implement core_sign() and core_verify()           Feb 12 2001  1330 
+     + clock calls to core_encrypt()/decrypt()      
+       in evals and return appropriate error
+       messages. 
+  19 Signature with appendix Crypt::RSA::PKCS15       Postponed.
+     (Requires ASN1) 
+  20 Signature with appendix (randomized)             Feb 19 2001  2030 
+     Crypt::RSA::SSA::PSS 
+  21 Split the code into modules listed in            Feb 14 2001  2100 
+     MANIFEST 
+     + Update tests.                                  Feb 14 2001  2100 
+  22 Use the DBI error handling method.               Feb 15 2001  2300
+  23 Plaintext and key material should                Feb 15 2001  2300 
+     we wiped out from memory at error
+     and DESTROY() 
+     + Implement Crypt::RSA::Key::DESTROY             Mar 03 2001  1500
+  24 Move mgf1 to Crypt::RSA::DataFormat              Feb 15 2001  2100 
+     and wrap in a method in 
+     EME::OAEP, SSA::PSS
+  25 Rename Cyphertext to Ciphertext in               Mar 06 2001  2315
+     Crypt::RSA::Primitives::decrypt()
+  26 Restructre Key modules into                      Mar 02 2001  2100
+     Crypt::RSA::Key::Generator
+     Crypt::RSA::Key::Private
+     Crypt::RSA::Key::Public 
+
+     Public Key
+     %key = ( version  => ...,
+              owner    => [],
+              ownersig => [],
+              type    => type
+              size    => size in bits of n,
+              n       => modulus
+              e       => exponent
+            ), 
+
+     Private Key 
+     Same as public key and: 
+     %key = (
+             __d      => decryption exp,
+             __p      => prime, 
+             __q      => prime, 
+            )
+
+*    + $key->check before operations
+    
+-------------------------------------------------------------------------------
+
+LEGEND
+ - Date in the Status field indicates the task was completed on that date.
+ - `*' in P field distinguishes pending tasks.
+ - `+' before the task description indicates a sub-task.
+
+
