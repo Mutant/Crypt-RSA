@@ -1,15 +1,15 @@
 #!/usr/bin/perl -sw
 ##
-## Crypt::RSA::SSA:PSS
+## Crypt::RSA::SS:PSS
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.14 2001/03/26 07:43:01 vipul Exp $
+## $Id: PSS.pm,v 1.1 2001/03/31 07:37:25 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
-package Crypt::RSA::SSA::PSS;
+package Crypt::RSA::SS::PSS;
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
@@ -19,14 +19,19 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.14 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.1 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
-    return bless { primitives => new Crypt::RSA::Primitives, 
-                   hlen       => 20,
-                   VERSION    => $VERSION,
-                 }, shift 
+    my ($class, %params) = @_;
+    my $self = bless { primitives => new Crypt::RSA::Primitives, 
+                       hlen       => 20,
+                       VERSION    => $VERSION,
+                     }, $class;
+    if ($params{Version}) { 
+        # do versioning here
+    }
+    return $self;
 }
 
 
@@ -136,11 +141,11 @@ sub version {
 
 =head1 NAME
 
-Crypt::RSA::SSA::PSS - Probabilistic Signature Scheme based on RSA. 
+Crypt::RSA::SS::PSS - Probabilistic Signature Scheme based on RSA. 
 
 =head1 SYNOPSIS
 
-    my $pss = new Crypt::RSA::SSA::PSS; 
+    my $pss = new Crypt::RSA::SS::PSS; 
 
     my $signature = $pss->sign (
                         Message => $message,

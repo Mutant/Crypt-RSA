@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Primitives.pm,v 1.7 2001/03/07 01:19:55 vipul Exp $
+## $Id: Primitives.pm,v 1.8 2001/03/31 02:45:23 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::Primitives; 
@@ -96,8 +96,8 @@ Crypt::RSA::Primitives - RSA encryption, decryption, signature and verification 
 
 This module implements RSA encryption, decryption, signature and
 verfication primitives. These primitives should only be used in the
-context of an encryption or signing scheme. See Crypt::RSA::EME::OAEP(3),
-and Crypt::RSA::SSA::PSS(3) for the implementation of two such schemes.
+context of an encryption or signing scheme. See Crypt::RSA::ES::OAEP(3),
+and Crypt::RSA::SS::PSS(3) for the implementation of two such schemes.
 
 =head1 ERROR HANDLING
 
@@ -109,8 +109,8 @@ Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 
 =head1 SEE ALSO 
 
-Crypt::RSA(3), Crypt::RSA::Key(3), Crypt::RSA::EME::OAEP(3), 
-Crypt::RSA::SSA::PSS(3)
+Crypt::RSA(3), Crypt::RSA::Key(3), Crypt::RSA::ES::OAEP(3), 
+Crypt::RSA::SS::PSS(3)
 
 =cut
 

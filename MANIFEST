@@ -16,8 +16,8 @@ lib/Crypt/RSA/Key.pm
 lib/Crypt/RSA/Key/Public.pm
 lib/Crypt/RSA/Key/Private.pm
 lib/Crypt/RSA/Debug.pm
-lib/Crypt/RSA/EME/OAEP.pm
-lib/Crypt/RSA/SSA/PSS.pm
+lib/Crypt/RSA/ES/OAEP.pm
+lib/Crypt/RSA/SS/PSS.pm
 
 t/00-errorhandler.t
 t/01-i2osp.t
@@ -32,5 +32,5 @@ t/09-publickey.t
 t/10-keygen.t
 t/11-wrapper.t
 
-# $Id: MANIFEST,v 1.11 2001/03/12 16:17:30 vipul Exp $ 
+# $Id: MANIFEST,v 1.12 2001/03/31 02:45:20 vipul Exp $ 
 

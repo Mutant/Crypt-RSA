@@ -6,17 +6,17 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Private.pm,v 1.4 2001/03/12 04:51:02 vipul Exp $
+## $Id: Private.pm,v 1.6 2001/03/31 08:20:09 vipul Exp $
 
 package Crypt::RSA::Key::Private;
-use lib '../../../lib';
+use lib '../../../../lib', 'lib';
 use strict; 
 use vars qw($AUTOLOAD);
 use Crypt::RSA;
 use Tie::EncryptedHash; 
-use Carp;
 use Data::Dumper;
 use Math::Pari qw(PARI pari2pv);
+use Carp;
 
 sub new { 
 
@@ -41,7 +41,14 @@ sub AUTOLOAD {
     my ($self, $value) = @_;
     my $key = $AUTOLOAD; $key =~ s/.*:://;
     if ($key =~ /^n|d|p|q|dp|dq|qinv$/) { 
-        $self->{private}{"_$key"} = pari2pv($value) if $value;
+        if (ref $value eq 'Math::Pari') { 
+            $self->{private}{"_$key"} = pari2pv($value)
+        } elsif ($value && !(ref $value)) { 
+            if ($value =~ /^0x/) { 
+                $self->{private}->{"_$key"} = 
+                    pari2pv(Math::Pari::_hex_cvt($value));
+            } else { $self->{private}{"_$key"} = $value } 
+        }
         my $return  = $self->{private}{"_$key"} || "";
         $return = PARI("$return") if $return =~ /^\d+$/;
         return $return;

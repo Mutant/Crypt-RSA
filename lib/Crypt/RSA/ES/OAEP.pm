@@ -1,33 +1,44 @@
 #!/usr/bin/perl -sw
 ##
-## Crypt::RSA::EME::OAEP 
+## Crypt::RSA::ES::OAEP 
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.14 2001/03/26 07:43:00 vipul Exp $
+## $Id: OAEP.pm,v 1.18 2001/03/31 08:06:33 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
-package Crypt::RSA::EME::OAEP; 
+package Crypt::RSA::ES::OAEP; 
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor generate_random_octet mgf1);
 use Crypt::RSA::Primitives;
-use Crypt::RSA::Debug qw(debug);
-use Digest::SHA1 qw(sha1);
-use Math::Pari qw(floor);
+use Crypt::RSA::Debug      qw(debug);
+use Digest::SHA1           qw(sha1);
+use Math::Pari             qw(floor);
+use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.14 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.18 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
-    return bless { primitives => new Crypt::RSA::Primitives, 
-                   P          => "Crypt::RSA",
-                   hlen       => 20,
-                   VERSION    => $VERSION,
-                 }, shift 
+    my ($class, %params) = @_;
+    my $self = bless { primitives => new Crypt::RSA::Primitives, 
+                       P          => "",
+                       hlen       => 20,
+                       VERSION    => $VERSION,
+                      }, $class;
+    if ($params{Version}) { 
+        if (versioncmp($params{Version}, '1.15') == -1) { 
+            $$self{P} = "Crypt::RSA"; 
+            $$self{VERSION} = $params{Version};
+        } elsif (versioncmp($params{Version}, $$self{VERSION}) == 1) { 
+            croak "Required version ($params{Version}) greater than installed version ($$self{VERSION}) of $class.\n";
+        }
+    }
+    return $self;
 }
 
 
@@ -155,11 +166,11 @@ sub version {
 
 =head1 NAME
 
-Crypt::RSA::EME::OAEP - Plaintext-aware encryption with RSA. 
+Crypt::RSA::ES::OAEP - Plaintext-aware encryption with RSA. 
 
 =head1 SYNOPSIS
 
-    my $oaep = new Crypt::RSA::EME::OAEP; 
+    my $oaep = new Crypt::RSA::ES::OAEP; 
 
     my $ct = $oaep->encrypt( Key => $key, Message => $message ) || 
                 die $oaep->errstr; 

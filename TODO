@@ -1,7 +1,7 @@
 
 
                            TODO for Crypt::RSA
-            $Id: TODO,v 1.17 2001/03/26 07:42:57 vipul Exp $
+            $Id: TODO,v 1.19 2001/03/31 04:02:06 vipul Exp $
 
 -------------------------------------------------------------------------------
 P No Task                                              Status
@@ -16,7 +16,10 @@ P No Task                                              Status
      moduli of lengths that are not multiples
      of 8.
    3 SSLv3 compatability                               Postponed.
-*  4 Read/write SSH keys
+*  4 Read/write SSH public keys
+     ::Key::Public::SSH should derive from 
+     ::Key::Public and override its read() and 
+     write()
 *  5 Choose a large `e' with Maurer's method
    6 Move rsaparams() over to Crypt::RSA::Key          Not required.
    7 Implement i2osp(), os2ip(), mgf1()                Dec 21 2000  0425 
@@ -64,11 +67,8 @@ P No Task                                              Status
   25 Rename Cyphertext to Ciphertext in               Mar 06 2001  2315
      Crypt::RSA::Primitives::decrypt()
   26 Restructre Key modules into                      Mar 02 2001  2100
-     Crypt::RSA::Key::Generator
-     Crypt::RSA::Key::Private
+     Crypt::RSA::Key
      Crypt::RSA::Key::Public 
-
-     Public Key
      %key = ( version  => ...,
               owner    => [],
               ownersig => [],
@@ -77,22 +77,37 @@ P No Task                                              Status
               n       => modulus
               e       => exponent
             ), 
-
-     Private Key 
+     Crypt::RSA::Key::Private
      Same as public key and: 
      %key = (
              __d      => decryption exp,
              __p      => prime, 
              __q      => prime, 
             )
-
-*    + $key->check before operations
-* 27 Add support for version specific operations 
-     in EME::* and SSA::* 
-* 28 Crypt::RSA should be able to use non-native 
+* 27 $key->check before operations
+  28 Add support for version specific operations      March 31 2001  0400
+     in EME::* and SSA::*.  Version number 
+     should be provided at new()
+* 29 Crypt::RSA should be able to use non-native 
      key formats through a mechanism similar to 
      variable EME/SSA support.
-    
+  30 Consider renaming EME to ES and SSA to SS.       March 31 2001  1500
+     (Renamed EME to ES, SSA to SS)
+* 31 Re-orgazine Crypt::RSA::Primitives.  
+     core_encrypt|decrypt|sign|verify() should be
+     replaced with rsaop() that uses the encryption 
+     exponent or the decryption exponent depending
+     on the type of key passed.  Also implement 
+     decryption with CRT here.
+* 32 Write Crypt::RSA::EME|SSA::RSAREF2 
+* 33 Write Crypt::RSA::EME|SSA::Textbook
+* 34 Write a note in documentation on insecurity of
+     Textbook RSA.  Also explain the concept of 
+     Schemes.
+* 35 Search CPAN for message passing modules, 
+     to automatically cascade Crypt::RSA::*->errstr
+     messages.
+ 
 -------------------------------------------------------------------------------
 
 LEGEND

@@ -10,12 +10,12 @@
 
 use lib '../lib';
 use lib 'lib';
-use Crypt::RSA::EME::OAEP;
+use Crypt::RSA::ES::OAEP;
 use Crypt::RSA::Key;
 
 print "1..1\n";
 my $i = 0;
-my $oaep = new Crypt::RSA::EME::OAEP;
+my $oaep = new Crypt::RSA::ES::OAEP;
 my $message = "My plenteous joys, Wanton in fullness, seek to hide themselves.";
 my $keychain = new Crypt::RSA::Key;
 my ($pub, $priv) = $keychain->generate ( Size => 1024, Password => 'xx', Identity => 'xx', Verbosity => 1 );

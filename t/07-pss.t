@@ -11,12 +11,12 @@
 use lib '../lib';
 use lib 'lib';
 use Crypt::RSA::Key;
-use Crypt::RSA::SSA::PSS;
+use Crypt::RSA::SS::PSS;
 use Math::Pari qw(PARI);
 
 print "1..4\n";
 my $i = 0;
-my $pss = new Crypt::RSA::SSA::PSS; 
+my $pss = new Crypt::RSA::SS::PSS; 
 
 my $message =  " Whither should I fly? \
                  I have done no harm. But I remember now \

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Public.pm,v 1.3 2001/03/07 15:04:35 vipul Exp $
+## $Id: Public.pm,v 1.5 2001/03/31 04:02:07 vipul Exp $
 
 package Crypt::RSA::Key::Public;
 use lib '../../../lib', 'lib';
@@ -36,7 +36,13 @@ sub AUTOLOAD {
     my ($self, $value) = @_;
     my $key = $AUTOLOAD; $key =~ s/.*:://;
     if ($key =~ /^n|e$/) { 
-        $self->{$key} = pari2pv($value) if $value;
+        if (ref $value eq 'Math::Pari') { 
+            $self->{$key} = pari2pv($value)
+        } elsif ($value && !(ref $value)) { 
+            if ($value =~ /^0x/) { 
+                $self->{$key} = pari2pv(Math::Pari::_hex_cvt($value));
+            } else { $self->{$key} = $value } 
+        }
         my $return  = $self->{$key} || "";
         $return = PARI("$return") if $return =~ /^\d+$/;
         return $return;

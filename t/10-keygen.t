@@ -14,10 +14,10 @@ use Crypt::RSA::Key;
 use Data::Dumper;
 
 my $i = 0;
-print "1..12\n";
+print "1..10\n";
 my $keychain = new Crypt::RSA::Key; 
 
-for my $ksize (qw(150 300 512 768 1024 2048)) { 
+for my $ksize (qw(128 256 512 768 1024)) { 
 
     my ($pub, $pri) = $keychain->generate ( Identity => 'mail@vipul.net', 
                                             Password => 'a day so foul and fair', 

@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.30 2001/03/26 08:04:20 vipul Exp $
+## $Id: RSA.pm,v 1.31 2001/03/31 02:45:22 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -16,8 +16,8 @@ use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::Key;
-use Crypt::RSA::EME::OAEP;
-use Crypt::RSA::SSA::PSS;
+use Crypt::RSA::ES::OAEP;
+use Crypt::RSA::SS::PSS;
 use Crypt::RSA::DataFormat qw(bitsize steak);
 use Crypt::RSA::Debug qw(debug);
 use Convert::ASCII::Armour;
@@ -25,14 +25,14 @@ use Carp;
 use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.30 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.31 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
-    'EME'    => { Scheme  => "Crypt::RSA::EME::OAEP",
+    'ES'    => { Scheme  => "Crypt::RSA::ES::OAEP",
                   Enoc    => 'n-42', # 42 octets less than size of n
                   Dnoc    => 'n-0', 
                 },
-    'SSA'    => { Scheme  => "Crypt::RSA::SSA::PSS",
+    'SS'    => { Scheme  => "Crypt::RSA::SS::PSS",
                   Snoc    => '-1',   # infinite
                   Dnoc    => '-1'    # infinite
                 },
@@ -44,12 +44,12 @@ sub new {
     my ($class, %params) = @_;
     my %self = (%DEFAULTS, %params);
 
-    my $eme    = $self{EME}{Scheme};
-    my $ssa    = $self{SSA}{Scheme};
-       eval    " require $eme"; 
-       eval    " require $ssa";
-    $self{eme} = eval "${eme}->new()";
-    $self{ssa} = eval "${ssa}->new()";
+    my $es    = $self{ES}{Scheme};
+    my $ss    = $self{SS}{Scheme};
+       eval   " require $es"; 
+       eval   " require $ss";
+    $self{es} = eval "${es}->new()";
+    $self{ss} = eval "${ss}->new()";
 
     $self{armour}   = new Convert::ASCII::Armour; 
     $self{keychain} = new Crypt::RSA::Key; 
@@ -79,22 +79,22 @@ sub encrypt {
 
     my $blocksize;
     my $k = ((bitsize ($key->n)) / 8); 
-    if ($$self{EME}{Enoc} =~ /\-(\d+)/) { 
+    if ($$self{ES}{Enoc} =~ /\-(\d+)/) { 
                $blocksize = $k - $1;
     }
 
     my $cyphertext;
     my @segments = steak ($plaintext, $blocksize);
     for (@segments) {
-        $cyphertext .= $self->{eme}->encrypt (Message => $_, Key => $key)
-            || return $self->error ($self->{eme}->errstr, \$key, \%params);
+        $cyphertext .= $self->{es}->encrypt (Message => $_, Key => $key)
+            || return $self->error ($self->{es}->errstr, \$key, \%params);
     }
 
     if ($params{Armour} || $params{Armor}) { 
         $cyphertext = $self->{armour}->armour ( 
                              Object   => "RSA ENCRYPTED MESSAGE", 
-                             Headers  => { Scheme  => $self->{EME}->{Scheme}, 
-                                           Version => $self->{eme}->version()
+                             Headers  => { Scheme  => $self->{ES}->{Scheme}, 
+                                           Version => $self->{es}->version()
                                          }, 
                              Content  => { Cyphertext => $cyphertext },
                              Compress => 1, 
@@ -125,8 +125,8 @@ sub decrypt {
     my $plaintext;
     my @segments = steak ($cyphertext, $blocksize);
     for (@segments) {
-        $plaintext .= $self->{eme}->decrypt (Cyphertext=> $_, Key => $key)
-            || return $self->error ($self->{eme}->errstr, \$key, \%params);
+        $plaintext .= $self->{es}->decrypt (Cyphertext=> $_, Key => $key)
+            || return $self->error ($self->{es}->errstr, \$key, \%params);
     }
 
     return $plaintext;
@@ -137,15 +137,15 @@ sub decrypt {
 sub sign { 
 
     my ($self, %params) = @_;
-    my $signature = $self->{ssa}->sign (%params) 
-                 || return $self->error ($self->{ssa}->errstr,
+    my $signature = $self->{ss}->sign (%params) 
+                 || return $self->error ($self->{ss}->errstr,
                         $params{Key}, \%params);
 
     if ($params{Armour} || $params{Armor}) { 
         $signature      = $self->{armour}->armour ( 
                Object   => "RSA SIGNATURE", 
-               Headers  => { Scheme  => $self->{SSA}->{Scheme}, 
-                             Version => $self->{ssa}->version() 
+               Headers  => { Scheme  => $self->{SS}->{Scheme}, 
+                             Version => $self->{ss}->version() 
                            }, 
                Content  => { Signature => $signature },
         );
@@ -166,8 +166,8 @@ sub verify {
         $params{Signature} = $$decoded{Content}{Signature}
     }
 
-    my $verify = $self->{ssa}->verify (%params) || 
-        return $self->error ($self->{ssa}->errstr, $params{Key}, \%params);
+    my $verify = $self->{ss}->verify (%params) || 
+        return $self->error ($self->{ss}->errstr, $params{Key}, \%params);
 
     return $verify;
 
@@ -183,8 +183,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.30 $ (Beta)
- $Date: 2001/03/26 08:04:20 $
+ $Revision: 1.31 $ (Beta)
+ $Date: 2001/03/31 02:45:22 $
 
 =head1 SYNOPSIS
 
@@ -258,7 +258,7 @@ Crypt::RSA::Key(3) manpage for usage details.
 
 encrypt() performs RSA encryption on a string of arbitrary length with a
 public key using the encryption scheme bound to the object at creation.
-The default scheme is OAEP, implemented in Crypt::RSA::EME::OAEP(3).
+The default scheme is OAEP, implemented in Crypt::RSA::ES::OAEP(3).
 encrypt() returns cyphertext (a string) on success and a non-true value on
 failure. It takes a hash as argument with following keys:
 
@@ -283,7 +283,7 @@ cyphertext as a 6-bit clean ASCII message.
 
 decrypt() performs RSA decryption with a private key using the encryption
 scheme bound to the object at creation. The default scheme is OAEP,
-implemented in Crypt::RSA::EME::OAEP(3). decrypt() returns plaintext on
+implemented in Crypt::RSA::ES::OAEP(3). decrypt() returns plaintext on
 success and a non-true value on failure. It takes a hash as argument with
 following keys:
 
@@ -308,7 +308,7 @@ Boolean parameter that specifies whether the Cyphertext is encoded in
 
 sign() creates an RSA signature on a string with a private key using the
 signature scheme bound to the object at creation. The default scheme is
-PSS, implemented in Crypt::RSA::SSA::PSS(3). sign() returns a signature on
+PSS, implemented in Crypt::RSA::SS::PSS(3). sign() returns a signature on
 success and a non-true value on failure. It takes a hash as argument
 with following keys:
 
@@ -333,7 +333,7 @@ signature as a 6-bit clean ASCII message.
 
 verify() verifies an RSA signature with a public key using the signature
 scheme bound to the object at creation. The default scheme is
-PSS, implemented in Crypt::RSA::SSA::PSS(3). verify() returns a true 
+PSS, implemented in Crypt::RSA::SS::PSS(3). verify() returns a true 
 value on success and a non-true value on failure. It takes a hash as argument
 with following keys:
 
@@ -377,11 +377,11 @@ RSA Public Key Management.
 
 RSA Private Key Management.
 
-=item B<Crypt::RSA::EME::OAEP>
+=item B<Crypt::RSA::ES::OAEP>
 
 Plaintext-aware encryption with RSA.
 
-=item B<Crypt::RSA::SSA::PSS>
+=item B<Crypt::RSA::SS::PSS>
 
 Probabilistic Signature Scheme based on RSA.
 

@@ -1,26 +1,46 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.5 2001/03/26 08:04:19 vipul Exp $
+           $Id: Changes,v 1.9 2001/03/31 08:06:31 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.31 
+
+ * Renamed ::EME::* to ::ES::*. EME (Encoding Method for encryption) was a
+   leftover from an earlier class framework. Renamed ::SSA::* to ::SS::*,
+   since we might have Signature Schemes without Appendix under ::SS::*
+
+ * Changed `P' (parameterization) in ::ES::OAEP to a null string.
+   Strings encrypted with versions < 1.15 will not decrypt.
+
+ * Added versioning support in ::ES::OAEP. Returns the old
+   parameterization string for version < 1.15. So strings encrypted 
+   with < 1.15 will decrypt!
+
+ * Wrote t/12-versioning.t, with tests for versioning in ::ES::OAEP.
+
+ * Added versioning support in ::SS::PSS.
+
+ * Numerical parameters of ::Key::Public and ::Key::Private can be
+   assigned perl strings, hex strings, or hex numbers.
+
 
 1.30                                                        March 25, 2001 
 
  * Documented Crypt::RSA methods
 
- * Added ASCII armour support to Crypt::RSA::encrypt(), decrypt(), 
-   sign() and verify() using Convert::ASCII::Armour
+ * Added ASCII armour support to Crypt::RSA::encrypt(), decrypt(), sign()
+   and verify() using Convert::ASCII::Armour
 
- * Crypt::RSA will now work with any encryption/signing scheme as 
-   long as they provide the same method interface as Crypt::RSA::EME::OAEP
-   and Crypt::RSA::SSA::PSS
-
- * Wrote Crypt::RSA::EME::OAEP::version() and 
-   Crypt::RSA::SSA::PSS::version(). The next release will include 
-   support for version specific operation in EME::* and PSS::*
-
- * Added and corrected documentation for Crypt::RSA::EME::OAEP and
+ * Crypt::RSA will now work with any encryption/signing scheme as long as
+   they provide the same method interface as Crypt::RSA::EME::OAEP and
    Crypt::RSA::SSA::PSS
+
+ * Wrote ::EME::OAEP::version() and ::SSA::PSS::version(). The next
+   release will include support for version specific operation in ::EME::*
+   and ::PSS::*
+
+ * Added and corrected documentation for ::EME::OAEP and ::SSA::PSS
 
 
 1.25                                                        March 12, 2001
@@ -43,5 +63,6 @@
  * Wrote Crypt::RSA::encrypt() and Crypt:RSA::decrypt()
 
  * Wrote a test for Crypt::RSA (t/11-wrapper.t)
+
 
 
