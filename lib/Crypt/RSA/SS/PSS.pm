@@ -6,20 +6,21 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.2 2001/04/09 23:07:29 vipul Exp $
+## $Id: PSS.pm,v 1.3 2001/04/17 19:48:40 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SS::PSS;
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
-use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor generate_random_octet mgf1);
+use Crypt::Random qw(makerandom_octet);
+use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor mgf1);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.2 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.3 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
@@ -39,7 +40,7 @@ sub sign {
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message};
     my $k = octet_len ($key->n);
-    my $salt = generate_random_octet ($self->{hlen});
+    my $salt = makerandom_octet (Length => $self->{hlen});
     my $em = $self->encode ($M, $salt, $k-1);
     my $m = os2ip ($em);
     my $sig = $self->{primitives}->core_sign (Key => $key, Message => $m);

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Makefile.PL,v 1.6 2001/04/07 12:46:16 vipul Exp $
+## $Id: Makefile.PL,v 1.7 2001/04/17 19:48:36 vipul Exp $
 
 use ExtUtils::MakeMaker;
 WriteMakefile(
@@ -15,7 +15,7 @@ WriteMakefile(
     'VERSION_FROM' => 'lib/Crypt/RSA.pm',
     'PREREQ_PM'    => { 
                         'Math::Pari'             => '2.001804', 
-                        'Crypt::Random'          => '0.33', 
+                        'Crypt::Random'          => '0.34', 
                         'Crypt::Primes'          => '0.38',
                         'Crypt::CBC'             =>  0, 
                         'Crypt::Blowfish'        =>  0,

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: 11-wrapper.t,v 1.1 2001/04/06 18:33:31 vipul Exp $
+## $Id: 11-wrapper.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
 use lib '../lib';
 use lib 'lib';

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: 01-i2osp.t,v 1.1 2001/02/19 20:22:21 vipul Exp $
+## $Id: 01-i2osp.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
 use lib '../lib';
 use Crypt::RSA::DataFormat qw(i2osp os2ip);

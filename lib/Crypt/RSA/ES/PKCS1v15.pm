@@ -6,21 +6,22 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.5 2001/04/09 23:07:28 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.6 2001/04/17 19:48:38 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 use strict;
 use vars qw(@ISA $VERSION);
+use Crypt::Random          qw(makerandom_octet);
 use Crypt::RSA::Errorhandler; 
-use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp generate_random_octet);
+use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug      qw(debug);
 use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.6 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -52,6 +53,8 @@ sub decrypt {
     my $key = $params{Key}; my $C = $params{Cyphertext}; 
     my $k = octet_len ($key->n);
     my $c = os2ip ($C);
+    debug ("bitsize(c): " . bitsize($c));
+    debug ("bitsize(n): " . bitsize($key->n));
     if (bitsize($c) > bitsize($key->n)) { 
         return $self->error ("Decryption error.", $key, \%params) 
     }
@@ -72,7 +75,7 @@ sub encode {
     my ($PS, $pslen) = ("", 0);
 
     $pslen = $emlen-$mlen-2;
-    $PS = generate_random_octet ($pslen);
+    $PS = makerandom_octet (Length => $pslen, Skip => chr(0));
     my $em = chr(2).$PS.chr(0).$M;
     return $em;
 }
@@ -83,6 +86,7 @@ sub decode {
 
     return $self->error ("Decoding error.") if length($em) < 10;
 
+    debug ("to decode: $em");
     my ($chr0, $chr2) = (chr(0), chr(2));
     my ($ps, $M);
     unless ( ($ps, $M) = $em =~ /^$chr2(.{8,})$chr0(.*)$/s ) { 

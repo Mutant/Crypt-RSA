@@ -1,7 +1,7 @@
 
 
                            TODO for Crypt::RSA
-            $Id: TODO,v 1.22 2001/04/07 12:46:16 vipul Exp $
+            $Id: TODO,v 1.23 2001/04/17 19:48:36 vipul Exp $
 
 -------------------------------------------------------------------------------
 P No Task                                              Status
@@ -86,6 +86,11 @@ P No Task                                              Status
              __q      => prime, 
             )
 * 27 $key->check before operations
+       n == p*q 
+       d*e mod p == 1 
+       d*e mod q == 1 
+       p*u mod q == 1 
+
   28 Add support for version specific operations       Mar 31 2001  0400
      in EME::* and SSA::*.  Version number 
      should be provided at new()
