@@ -7,13 +7,13 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.19 2001/03/07 02:49:38 vipul Exp $
+## $Id: RSA.pm,v 1.20 2001/03/07 15:04:31 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA;
 use Carp;
 
-($VERSION) = '$Revision: 1.19 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.20 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     return bless { P => "Crypt::RSA $VERSION" }, shift; 
@@ -27,8 +27,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.19 $ (Beta)
- $Date: 2001/03/07 02:49:38 $
+ $Revision: 1.20 $ (Beta)
+ $Date: 2001/03/07 15:04:31 $
 
 =head1 DESCRIPTION
 

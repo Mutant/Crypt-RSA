@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Key.pm,v 1.5 2001/03/07 03:03:31 vipul Exp $
+## $Id: Key.pm,v 1.6 2001/03/07 15:04:33 vipul Exp $
 
 package Crypt::RSA::Key; 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Crypt::RSA::Key::Private;
 use Math::Pari qw(PARI Mod lift);
 @ISA = qw(Crypt::RSA::Errorhandler);
 
-($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.6 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     return bless {}, shift;
@@ -89,7 +89,7 @@ sub generate {
 
 =head1 NAME
 
-Crypt::RSA::Keys - RSA Key Pair Generator.
+Crypt::RSA::Key - RSA Key Pair Generator.
 
 =head1 SYNOPSIS
 

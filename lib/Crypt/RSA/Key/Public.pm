@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Public.pm,v 1.2 2001/03/07 03:05:37 vipul Exp $
+## $Id: Public.pm,v 1.3 2001/03/07 15:04:35 vipul Exp $
 
 package Crypt::RSA::Key::Public;
 use lib '../../../lib', 'lib';
