@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.31 2001/03/31 02:45:22 vipul Exp $
+## $Id: RSA.pm,v 1.32 2001/04/05 11:26:57 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -25,7 +25,7 @@ use Carp;
 use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.31 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.32 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
     'ES'    => { Scheme  => "Crypt::RSA::ES::OAEP",
@@ -183,8 +183,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.31 $ (Beta)
- $Date: 2001/03/31 02:45:22 $
+ $Revision: 1.32 $ (Beta)
+ $Date: 2001/04/05 11:26:57 $
 
 =head1 SYNOPSIS
 
@@ -461,4 +461,5 @@ pac is at http://lists.vipul.net/mailman/listinfo/pac/
 =item 14 B<E. Young, T. Hudson, OpenSSL Team.> OpenSSL 0.9.5a source code (2000).
 
 =cut
+
 

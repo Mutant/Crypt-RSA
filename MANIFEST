@@ -17,6 +17,7 @@ lib/Crypt/RSA/Key/Public.pm
 lib/Crypt/RSA/Key/Private.pm
 lib/Crypt/RSA/Debug.pm
 lib/Crypt/RSA/ES/OAEP.pm
+lib/Crypt/RSA/ES/PKCS1_v1_5.pm
 lib/Crypt/RSA/SS/PSS.pm
 
 t/00-errorhandler.t

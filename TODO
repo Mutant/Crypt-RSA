@@ -1,7 +1,7 @@
 
 
                            TODO for Crypt::RSA
-            $Id: TODO,v 1.19 2001/03/31 04:02:06 vipul Exp $
+            $Id: TODO,v 1.20 2001/04/05 11:26:56 vipul Exp $
 
 -------------------------------------------------------------------------------
 P No Task                                              Status
@@ -107,6 +107,9 @@ P No Task                                              Status
 * 35 Search CPAN for message passing modules, 
      to automatically cascade Crypt::RSA::*->errstr
      messages.
+* 36 keygen < 384 bits (nhuillard@ghs.fr)
+* 37 Remove use lib 'locallib' from all modules 
+     in production version. (nhuillard@ghs.fr)
  
 -------------------------------------------------------------------------------
 

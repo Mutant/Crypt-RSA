@@ -1,4 +1,4 @@
-#!/usr/bin/perl -sw
+#!/usr/bin/perl -s
 ##
 ## Crypt::RSA::Debug
 ##
@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Debug.pm,v 1.6 2001/03/12 04:50:05 vipul Exp $
+## $Id: Debug.pm,v 1.7 2001/04/05 11:26:58 vipul Exp $
 
 package Crypt::RSA::Debug; 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
