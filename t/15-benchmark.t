@@ -20,12 +20,10 @@ use Math::Pari qw(PARI);
 use Benchmark;
 use Data::Dumper;
 
-no warnings;
-
 print "1..1\n";
 my $i = 0;
-local $pss = new Crypt::RSA::SS::PSS; 
-local $pkcs = new Crypt::RSA::SS::PKCS1v15;
+local $pss = new Crypt::RSA::SS::PSS;  
+local $pkcs = new Crypt::RSA::SS::PKCS1v15;  
 
 local $message =  " Whither should I fly? \
                  I have done no harm. But I remember now \
@@ -37,15 +35,12 @@ local $keychain = Crypt::RSA::Key->new();
 
 local ($pub, $priv) = readkeys();
 
-
-
 my $keygen = new Crypt::RSA::Key; 
 
 local ($pub2, $priv2) = 
 $keygen->generate ( Size => 512, Verbosity => 0, Password => 'sdfd', Identity => 'sdsdf' );
 
-local ($sig, $verify, $sigpkcs, $int, $str, $sig1);
-
+local ($sig, $sigpkcs);
 $count ||= 100;
 
 local $sigcrt = $pss->sign (
@@ -57,6 +52,10 @@ local $sigcrtpkcs = $pkcs->sign (
           Message => $message,
           Key     => $priv,
         );
+
+
+($message, $pkcs, $pss, $pub, $pub2, $priv, $priv2, $sig, $sigcrt, 
+ $sigcrtpkcs, $keychain, $sigpkcs);
  
 timethese ($count, {
 
@@ -84,7 +83,7 @@ timethese ($count, {
     ',
 
     'PSS-verify' => '
-            $verify = $pss->verify (
+            $pss->verify (
                 Key => $pub, 
                 Message => $message, 
                 Signature => $sig, 
@@ -107,7 +106,7 @@ timethese ($count, {
 
 
     'PKCS-verify' => '
-            $verify = $pkcs->verify (
+            $pkcs->verify (
                 Key => $pub, 
                 Message => $message, 
                 Signature => $sigpkcs, 
@@ -115,19 +114,12 @@ timethese ($count, {
     ',    
 
     'PKCS-verify-CRT' => '
-            $verify = $pkcs->verify (
+            $pkcs->verify (
                 Key => $pub2, 
                 Message => $message, 
                 Signature => $sigcrtpkcs, 
         );
     ',
-
-
-#    'os2ip' => '$int = os2ip($message)',
-#
-#    'xi2osp' => '$str = i2osp($int)',
-
-
 });
 
 

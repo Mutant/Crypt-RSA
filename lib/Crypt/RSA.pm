@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.43 2001/05/25 00:20:38 vipul Exp $
+## $Id: RSA.pm,v 1.44 2001/05/30 13:10:42 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -22,7 +22,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.43 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.44 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -205,8 +205,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.43 $ (Beta)
- $Date: 2001/05/25 00:20:38 $
+ $Revision: 1.44 $ (Beta)
+ $Date: 2001/05/30 13:10:42 $
 
 =head1 SYNOPSIS
 
@@ -598,5 +598,4 @@ http://www.faqs.org/faqs/cryptography-faq/part01/index.html
 =item 16 B<Victor Shoup.> A Proposal for an ISO Standard for Public Key Encryption (2001).
 
 =cut
-
 

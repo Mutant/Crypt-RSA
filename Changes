@@ -1,8 +1,12 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.24 2001/05/25 00:22:15 vipul Exp $
+           $Id: Changes,v 1.25 2001/05/30 13:10:32 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.44                                                          May 31, 2001
+
+  * Dirty hack to shut off warnings in t/15-benchmark.t
 
 1.43                                                          May 25, 2001
 
