@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.4 2001/04/23 04:12:21 vipul Exp $
+## $Id: PSS.pm,v 1.5 2001/06/22 23:27:38 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SS::PSS;
@@ -20,7 +20,7 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.4 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
@@ -38,7 +38,7 @@ sub new {
 
 sub sign { 
     my ($self, %params) = @_; 
-    my $key = $params{Key}; my $M = $params{Message};
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
     my $k = octet_len ($key->n);
     my $salt = makerandom_octet (Length => $self->{hlen});
     my $em = $self->encode ($M, $salt, $k-1);
@@ -52,7 +52,7 @@ sub sign {
 
 sub verify_with_salt { 
     my ($self, %params) = @_;
-    my $key = $params{Key}; my $M = $params{Message}; 
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
     my $S = $params{Signature}; my $salt = $params{Salt};
     my $k = octet_len ($key->n);
     my $em; 
@@ -74,7 +74,8 @@ sub verify_with_salt {
 
 sub verify { 
     my ($self, %params) = @_;
-    my $key = $params{Key}; my $M = $params{Message}; my $S = $params{Signature}; 
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext}; 
+    my $S = $params{Signature}; 
     my $k = octet_len ($key->n);
     my $s = os2ip ($S);
     my $m = $self->{primitives}->core_verify (Key => $key, Signature => $s) || 

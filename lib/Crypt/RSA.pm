@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.46 2001/06/18 14:37:48 vipul Exp $
+## $Id: RSA.pm,v 1.47 2001/06/22 23:27:34 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -22,7 +22,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.46 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.47 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -89,7 +89,7 @@ sub keygen {
 sub encrypt { 
 
     my ($self, %params)   = @_;
-    my $plaintext         = $params{Message};
+    my $plaintext         = $params{Message} || $params{Plaintext};
     my $key               = $params{Key}; 
 
     return $self->error ($key->errstr, \%params, $key, \$plaintext) 
@@ -125,7 +125,7 @@ sub encrypt {
 sub decrypt { 
 
     my ($self , %params) = @_;
-    my $cyphertext       = $params{Cyphertext};
+    my $cyphertext       = $params{Cyphertext} || $params{Ciphertext};
     my $key              = $params{Key}; 
 
     return $self->error ($key->errstr, \%params, $key) unless $key->check();
@@ -210,8 +210,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.46 $ (Beta)
- $Date: 2001/06/18 14:37:48 $
+ $Revision: 1.47 $ (Beta)
+ $Date: 2001/06/22 23:27:34 $
 
 =head1 SYNOPSIS
 

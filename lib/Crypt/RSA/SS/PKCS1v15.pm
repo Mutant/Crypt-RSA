@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.5 2001/05/20 23:37:49 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.6 2001/06/22 23:27:38 vipul Exp $
 
 package Crypt::RSA::SS::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.6 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
@@ -51,7 +51,7 @@ sub new {
 sub sign { 
 
     my ($self, %params) = @_; 
-    my $key = $params{Key}; my $M = $params{Message};
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
     my $k = octet_len ($key->n);
 
     my $em; 
@@ -72,7 +72,7 @@ sub sign {
 sub verify { 
 
     my ($self, %params) = @_;
-    my $key = $params{Key}; my $M = $params{Message}; 
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
     my $S = $params{Signature}; 
     my $k = octet_len ($key->n);
     return $self->error ("Invalid signature.", \$key, \$M, \%params) if length($S) != $k;

@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Primitives.pm,v 1.13 2001/05/23 22:31:49 vipul Exp $
+## $Id: Primitives.pm,v 1.14 2001/06/22 23:27:35 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::Primitives; 
@@ -32,7 +32,7 @@ sub core_encrypt {
     my ($self, %params) = @_;
     my $key = $params{Key}; 
     $self->error ("Bad key.", \%params, $key) unless $key->check();
-    my $plaintext = $params{Plaintext};
+    my $plaintext = $params{Message} || $params{Plaintext};
     debug ("pt == $plaintext");
 
     my $e = $key->e; my $n = $key->n;
@@ -56,7 +56,7 @@ sub core_decrypt {
     my $key = $params{Key}; 
     $self->error ("Bad key.") unless $key->check();
 
-    my $cyphertext = $params{Cyphertext};
+    my $cyphertext = $params{Cyphertext} || $params{Ciphertext};
     my $n = $key->n;
     return $self->error ("Decryption error.") if $cyphertext > $n;
 
@@ -84,7 +84,7 @@ sub core_decrypt {
 sub core_sign { 
 
     my ($self, %params) = @_; 
-    $params{Cyphertext} = $params{Message};
+    $params{Cyphertext} = $params{Message} || $params{Plaintext};
     return $self->core_decrypt (%params); 
 
 } 

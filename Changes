@@ -1,8 +1,16 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.27 2001/06/18 14:37:47 vipul Exp $
+           $Id: Changes,v 1.28 2001/06/22 23:27:33 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.47                                                         June 22, 2001
+
+  * ::ES::*::decrypt() won't raise an error when cyphertext is an empty
+    string. Thanks to Roman Semenov for pointing out the bug.
+
+  * Field names Plaintext & Message and Cyphertext & Ciphertext can now be
+    used interchangeably everywhere.
 
 1.46                                                         June 18, 2001
 

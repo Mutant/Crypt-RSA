@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.9 2001/06/18 14:37:50 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.10 2001/06/22 23:27:37 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.9 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.10 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -52,7 +52,7 @@ sub encrypt {
 
 sub decrypt { 
     my ($self, %params) = @_;
-    my $key = $params{Key}; my $C = $params{Cyphertext}; 
+    my $key = $params{Key}; my $C = $params{Cyphertext} || $params{Ciphertext};
     return $self->error ($key->errstr, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);
     my $c = os2ip ($C);
@@ -65,15 +65,18 @@ sub decrypt {
         return $self->error ("Decryption error.", $key, \%params);
     my $em = i2osp ($m, $k-1) || 
         return $self->error ("Decryption error.", $key, \%params);
-    my $M = $self->decode ($em) || 
-        return $self->error ("Decryption error.", $key, \%params);
+    my $M; $self->errstrrst;  # reset the errstr
+    unless ($M = $self->decode ($em)) { 
+        return $self->error ("Decryption error.", $key, \%params) if $self->errstr();
+        return $M;
+    } 
     return $M;
 } 
 
 
 sub encode { 
     my ($self, $M, $emlen) = @_; 
-    my $mlen = length($M);
+    $M = $M || ""; my $mlen = length($M);
     return $self->error ("Message too long.", \$M) if $mlen > $emlen-10;
     my ($PS, $pslen) = ("", 0);
 
@@ -96,7 +99,6 @@ sub decode {
         return $self->error ("Decoding error.");
     }
     return $self->error ("Decoding error.") if length($ps) < 8; 
-
     return $M;
 }
 

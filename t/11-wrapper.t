@@ -13,7 +13,7 @@ use lib 'lib';
 use Crypt::RSA;
 use Crypt::RSA::Debug qw(debuglevel);
 
-print "1..8\n";
+print "1..12\n";
 my $i = 0;
 my $rsa = new Crypt::RSA;
 
@@ -51,7 +51,9 @@ my $plaintext =<<'EOM';
 
 EOM
 
-for my $keysize (qw(384 1024)) { 
+for my $keysize (qw(384 1536 512)) { 
+
+    $plaintext = "" if $keysize == 512;
 
     my ($pub, $pri) = $rsa->keygen ( 
                         Size      => $keysize, 
@@ -74,10 +76,11 @@ for my $keysize (qw(384 1024)) {
                         Cyphertext => $ctxt, 
                         Key        => $pri,
                         Armour     => 1, 
-                     ) || die $rsa->errstr();
+                     );
 
-    print $ptxt;
+    die $rsa->errstr() if ($rsa->errstr() && !$ptxt);
 
+    print $ptxt if $ptxt;
     print $ptxt eq $plaintext  ? "ok" : "not ok"; print " ", ++$i, "\n";
 
     my $signature = $rsa->sign ( 
@@ -87,7 +90,6 @@ for my $keysize (qw(384 1024)) {
                     ) || die $rsa->errstr();
 
     print "$signature\n";
-
     print $signature ? "ok" : "not ok"; print " ", ++$i, "\n";
 
     my $verify = $rsa->verify (

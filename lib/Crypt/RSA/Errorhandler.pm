@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Errorhandler.pm,v 1.4 2001/05/20 23:37:45 vipul Exp $
+## $Id: Errorhandler.pm,v 1.5 2001/06/22 23:27:35 vipul Exp $
 
 package Crypt::RSA::Errorhandler; 
 use strict;
@@ -41,6 +41,10 @@ sub errstr {
     return $$self{errstr};
 }
 
+sub errstrrst { 
+    my $self = shift;
+    $$self{errstr} = "";
+}
 
 1;
 
