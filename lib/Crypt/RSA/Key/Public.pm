@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Public.pm,v 1.6 2001/04/23 04:12:19 vipul Exp $
+## $Id: Public.pm,v 1.7 2001/06/11 13:41:56 vipul Exp $
 
 package Crypt::RSA::Key::Public;
 use lib '../../../lib', 'lib';
@@ -89,7 +89,7 @@ sub write {
 
 sub read { 
     my ($self, %params) = @_;
-    open DISK, $params{Filename} || 
+    open DISK, $params{Filename} or
         croak "Can't open $params{Filename} to read.";
     my @key = <DISK>; 
     close DISK;

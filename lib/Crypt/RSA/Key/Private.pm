@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Private.pm,v 1.12 2001/05/23 22:31:50 vipul Exp $
+## $Id: Private.pm,v 1.13 2001/06/11 13:41:56 vipul Exp $
 
 package Crypt::RSA::Key::Private;
 use lib '../../../../lib', 'lib', '../lib';
@@ -20,7 +20,7 @@ use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
 use vars qw(@ISA);
 
-($VERSION) = '$Revision: 1.12 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.13 $' =~ /\s(\d+\.\d+)\s/; 
 @ISA       = qw(Crypt::RSA::Errorhandler);
 
 
@@ -177,7 +177,7 @@ sub write {
 
 sub read { 
     my ($self, %params) = @_;
-    open DISK, $params{Filename} || 
+    open DISK, $params{Filename} or 
         croak "Can't open $params{Filename} to read.";
     my @key = <DISK>; 
     close DISK;
@@ -237,7 +237,7 @@ Crypt::RSA::Key::Private -- RSA Private Key Management.
 
     $key->write  ( Filename => 'rsakeys/banquo.private'  );
 
-    $akey = new Crypt::RSA::Private::Key (
+    $akey = new Crypt::RSA::Key::Private (
                  Filename => 'rsakeys/banquo.private'
                 );   
 

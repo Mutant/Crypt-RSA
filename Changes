@@ -1,8 +1,13 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.25 2001/05/30 13:10:32 vipul Exp $
+           $Id: Changes,v 1.26 2001/06/11 13:41:54 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.45                                                         June 11, 2001
+
+  * Small fixes in ::Key::Private/Pubic and ::Key::Private pod.  Thanks 
+    to Eric Kolve for pointing out the bugs.
 
 1.44                                                          May 31, 2001
 
