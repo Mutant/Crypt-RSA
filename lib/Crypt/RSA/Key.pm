@@ -9,9 +9,7 @@
 ## $Id: Key.pm,v 1.13 2001/05/25 00:20:40 vipul Exp $
 
 package Crypt::RSA::Key; 
-use lib "/home/vipul/PERL/crypto/rsa/lib";
-use lib "/home/vipul/PERL/crypto/primes/lib";
-use lib "/home/vipul/PERL/classloader/lib";
+use lib qw(lib);
 use strict;
 use vars                   qw(@ISA $VERSION);
 use Class::Loader;
@@ -24,7 +22,7 @@ use Crypt::RSA::Key::Public;
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
 
 
-($VERSION)  = '$Revision: 1.13 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.91 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %MODMAP = ( 
@@ -108,8 +106,8 @@ sub generate {
     $$key{p} = 0; $$key{q} = 0; $$key{e} = 0; $m = 0;
 
     if ($params{Filename}) { 
-        $pubkey->write ("$params{Filename}.public");
-        $prikey->write ("$params{Filename}.private");
+        $pubkey->write (Filename => "$params{Filename}.public");
+        $prikey->write (Filename => "$params{Filename}.private");
     }
 
     return ($pubkey, $prikey);

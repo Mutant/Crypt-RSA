@@ -10,8 +10,7 @@
 ## $Id: RSA.pm,v 1.48 2001/09/25 12:44:55 vipul Exp $
 
 package Crypt::RSA;
-use lib '/home/vipul/PERL/crypto/rsa/lib';
-use lib '/home/vipul/PERL/classloader/lib';
+use lib qw(lib);
 use strict;
 use vars qw(@ISA $VERSION);
 use Class::Loader;
@@ -22,7 +21,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.48 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.50 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -237,7 +236,7 @@ Crypt::RSA - RSA public-key cryptosystem.
 
     my $plaintext = 
         $rsa->decrypt ( 
-            Cyphertext => $cyperhtext, 
+            Cyphertext => $cyphertext, 
             Key        => $private,
             Armour     => 1,
         ) || die $rsa->errstr();

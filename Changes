@@ -4,6 +4,20 @@
 
 --------------------------------------------------------------------------
 
+1.50                                                      January 08, 2003
+
+  * In ::Key::generate() calls to ::Key::Private::write() and
+    ::Key::Public::write() have been fixed.  Thanks to 
+    Lars Rehe <rehe@mail.desy.de> for pointing out this bug.
+
+  * Removed all /home/vipul/PERL/crypt* from @INC from all modules.
+
+  * Fixed version numbers on a few modules, so CPAN correctly reports the
+    newer modules.
+
+  * Fixed some documentation typos.
+    
+
 1.48                                                    September 25, 2001
 
   * POD documentation for ::Key::[Private|Public].

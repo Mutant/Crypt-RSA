@@ -53,7 +53,7 @@ EOM
 
 for my $keysize (qw(384 1536 512)) { 
 
-    $plaintext = "" if $keysize == 512;
+    # $plaintext = "" if $keysize == 512;
 
     my ($pub, $pri) = $rsa->keygen ( 
                         Size      => $keysize, 

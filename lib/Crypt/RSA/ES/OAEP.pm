@@ -8,8 +8,8 @@
 ##
 ## $Id: OAEP.pm,v 1.24 2001/06/22 23:27:37 vipul Exp $
 
-use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::ES::OAEP; 
+use lib qw(lib);
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::Random          qw(makerandom_octet);

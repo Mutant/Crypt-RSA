@@ -9,8 +9,8 @@
 ##
 ## $Id: Primitives.pm,v 1.14 2001/06/22 23:27:35 vipul Exp $
 
-use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::Primitives; 
+use lib qw(lib);
 use strict;
 use vars qw(@ISA);
 use Crypt::RSA::Errorhandler;

@@ -9,7 +9,7 @@
 ## $Id: Private.pm,v 1.15 2001/09/25 14:11:22 vipul Exp $
 
 package Crypt::RSA::Key::Private;
-use lib '../../../../lib', 'lib', '../lib';
+use lib qw(lib);
 use strict; 
 use vars qw($AUTOLOAD $VERSION);
 use Crypt::RSA::Errorhandler;

@@ -9,7 +9,7 @@
 ## $Id: PKCS1v15.pm,v 1.10 2001/06/22 23:27:37 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
-use lib "/home/vipul/PERL/crypto/rsa/lib";
+use lib qw(lib);
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::Random          qw(makerandom_octet);
@@ -21,7 +21,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.10 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.91 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;

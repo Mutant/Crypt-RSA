@@ -10,7 +10,7 @@
 
 package Crypt::RSA::Key::Public::SSH;
 use strict;
-use lib '/home/vipul/PERL/crypto/rsa/lib';
+use lib qw(lib);
 use Crypt::RSA::DataFormat qw(bitsize);
 use Crypt::RSA::Key::Public;
 use vars qw(@ISA);

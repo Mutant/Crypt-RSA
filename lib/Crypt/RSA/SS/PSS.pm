@@ -8,8 +8,8 @@
 ##
 ## $Id: PSS.pm,v 1.5 2001/06/22 23:27:38 vipul Exp $
 
-use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SS::PSS;
+use lib qw(lib);
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 

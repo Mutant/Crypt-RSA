@@ -9,7 +9,7 @@
 ## $Id: PKCS1v15.pm,v 1.6 2001/06/22 23:27:38 vipul Exp $
 
 package Crypt::RSA::SS::PKCS1v15;
-use lib "/home/vipul/PERL/crypto/rsa/lib";
+use lib qw(lib);
 use strict;
 use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 

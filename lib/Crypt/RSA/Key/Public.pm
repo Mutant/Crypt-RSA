@@ -9,7 +9,7 @@
 ## $Id: Public.pm,v 1.8 2001/09/25 14:11:23 vipul Exp $
 
 package Crypt::RSA::Key::Public;
-use lib '../../../lib', 'lib';
+use lib qw(lib);
 use strict; 
 use vars qw($AUTOLOAD);
 use Crypt::RSA;
@@ -128,7 +128,7 @@ Crypt::RSA::Key::Public -- RSA Public Key Management.
     $key = new Crypt::RSA::Key::Public; 
     $key->write ( Filename => 'rsakeys/banquo.public' );
 
-    $akey = new Crypt::RSA::Public (
+    $akey = new Crypt::RSA::Key::Public (
                 Filename => 'rsakeys/banquo.public' 
             );
 
@@ -157,7 +157,7 @@ Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 
 =head1 SEE ALSO
 
-Crypt::RSA::Key(3), Crypt::RSA::Private(3)
+Crypt::RSA::Key(3), Crypt::RSA::Key::Private(3)
 
 =cut
 
