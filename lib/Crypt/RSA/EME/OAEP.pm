@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.9 2001/03/07 01:20:16 vipul Exp $
+## $Id: OAEP.pm,v 1.10 2001/03/12 04:50:58 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::EME::OAEP; 
@@ -121,7 +121,8 @@ sub decode {
     $db = substr $db, $hlen;
     my ($chr0, $chr1) = (chr(0), chr(1));
     my ($ps, $m);
-    unless ( ($ps, undef, $m) = $db =~ /($chr0*)($chr1)(.*)$/ ) { 
+    debug ("db == $db [" . length($db) . "]"); 
+    unless ( ($ps, undef, $m) = $db =~ /^($chr0*)($chr1)(.*)$/s ) { 
         return $self->error ("Decoding error.", \$P);
     } 
 

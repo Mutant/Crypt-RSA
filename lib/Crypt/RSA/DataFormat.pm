@@ -7,19 +7,19 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: DataFormat.pm,v 1.7 2001/03/07 03:05:36 vipul Exp $
+## $Id: DataFormat.pm,v 1.8 2001/03/12 04:50:05 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA::DataFormat; 
 use vars qw(@ISA);
-use Math::Pari qw(PARI pari2pv floor);
+use Math::Pari qw(PARI pari2pv floor pari2num);
 use Crypt::Random qw(makerandom);
 use Digest::SHA1 qw(sha1);
 use Carp;
 require Exporter;
 @ISA = qw(Exporter);
 
-@EXPORT_OK = qw(i2osp os2ip octet_xor generate_random_octet bitsize mgf1);
+@EXPORT_OK = qw(i2osp os2ip octet_xor generate_random_octet bitsize mgf1 steak);
 
 
 sub i2osp {
@@ -68,7 +68,7 @@ sub generate_random_octet {
 
 
 sub bitsize ($) {
-    return floor(Math::Pari::log(shift)/Math::Pari::log(2)) + 1;
+    return pari2num(floor(Math::Pari::log(shift)/Math::Pari::log(2)) + 1);
 }
 
 
@@ -103,27 +103,13 @@ sub mgf1 {
 }
 
 
-sub blocksize { 
-    my ($self, $n) = @_; 
-    my $blocksize = bitsize($n); my $padding = 8; 
-    my $sbs = $blocksize -= $padding; $blocksize -= $blocksize%8;
-    $padding += $sbs - $blocksize;
-    return ($blocksize, $padding); 
-}
-
-
-sub steak {
-    my ($self, $text, $blocksize) = @_; 
-    croak "Invalid blocksize." if $blocksize % 8;
-    my $tlen = length($text) * 8;
-    my $chunkcnt = $tlen % $blocksize
-        ? int($tlen/$blocksize) + 1 : $tlen/$blocksize;
-    my ($hbs, $hcc) = map {$_%4 ? int($_/4)+1 : $_/4} ($blocksize, $chunkcnt);
-    my @chunks = unpack "H$hbs"x$hcc, $text; 
-    if (length $chunks[-1] < $hbs) {
-        $chunks[-1] = "0"x($hbs - length $chunks[-1]) . $chunks[-1];
-    }
-    return \@chunks;
+sub steak { 
+    my ($text, $blocksize) = @_; 
+    my $textsize = length($text);
+    my $chunkcount = $textsize % $blocksize 
+        ? int($textsize/$blocksize) + 1 : $textsize/$blocksize;
+    my @segments = unpack "a$blocksize"x$chunkcount, $text;
+    return @segments;
 }
 
 1;
@@ -166,6 +152,11 @@ Returns the length of the B<Integer> in bits.
 =item B<octet_xor> String1, String2
 
 Returns the result of B<String1> XOR B<String2>.
+
+=item B<steak> String, Length 
+
+Returns an array of segments of length B<Length> from B<String>.  The final 
+segment can be smaller than B<Length>.
 
 =back
 

@@ -4,6 +4,7 @@
 MANIFEST
 ARTISTIC
 TODO 
+Changes
 
 Makefile.PL
 
@@ -29,6 +30,7 @@ t/07-pss.t
 t/08-secretkey.t
 t/09-publickey.t
 t/10-keygen.t
+t/11-wrapper.t
 
-# $Id: MANIFEST,v 1.9 2001/03/07 02:49:04 vipul Exp $ 
+# $Id: MANIFEST,v 1.10 2001/03/12 04:49:40 vipul Exp $ 
 

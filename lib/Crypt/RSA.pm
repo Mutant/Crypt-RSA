@@ -7,19 +7,94 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.23 2001/03/07 15:39:55 vipul Exp $
+## $Id: RSA.pm,v 1.24 2001/03/12 04:49:49 vipul Exp $
 
-use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA;
+use lib '/home/vipul/PERL/crypto/rsa/lib';
+# use strict;
+use vars qw(@ISA);
+use Crypt::RSA::Errorhandler; 
+use Crypt::RSA::Key;
+use Crypt::RSA::EME::OAEP;
+use Crypt::RSA::SSA::PSS;
+use Crypt::RSA::DataFormat qw(bitsize steak);
+use Crypt::RSA::Debug qw(debug);
 use Carp;
+use Data::Dumper;
 
-($VERSION) = '$Revision: 1.23 $' =~ /\s(\d+\.\d+)\s/; 
+@ISA = qw(Crypt::RSA::Errorhandler);
+
+($VERSION) = '$Revision: 1.24 $' =~ /\s(\d+\.\d+)\s/; 
+
+my %DEFAULTS = ( 
+    'EME'    => { Scheme      => "Crypt::RSA::EME::OAEP",
+                  Encryptsize => 'n-42', # 42 octets less than size of n
+                  Decryptsize => 'n-0', 
+                },
+    'SSA'    => { Scheme     => "Crypt::RSA::SSA::PSS",
+                  Signsize   => '-1',   # infinite
+                  Verifysize => '-1'
+                }
+);
 
 sub new { 
-    return bless { P => "Crypt::RSA $VERSION" }, shift; 
+    my ($class, %params) = @_;
+    my %self = (%DEFAULTS, %params);
+
+
+    # replace literals with $self{EME} and $self{PSS}
+    $self{keychain}  = new Crypt::RSA::Key; 
+    $self{eme} = new Crypt::RSA::EME::OAEP;
+    $self{ssa} = new Crypt::RSA::SSA::PSS;
+
+    return bless \%self, $class; 
 }
 
+sub keygen { 
+    my ($self, %params) = @_;
+    my @keys = $self->{keychain}->generate (%params);
+    return @keys if @keys;
+    return $self->error ($self->{keychain}->errstr);
+} 
+
+
+sub encrypt { 
+    my ($self, %params) = @_;
+    my $key = $params{Key}; 
+    my $plaintext = $params{Message};
+    my $cyphertext;
+    my $blocksize = ((bitsize ($key->n)) / 8); 
+    if ($$self{EME}{Encryptsize} =~ /\-(\d+)/) { 
+        $blocksize -= $1;
+    }
+    my @segments = steak ($plaintext, $blocksize);
+    for (@segments) {
+        $cyphertext .= $self->{eme}->encrypt (Message => $_, Key => $key)
+            || return $self->error ($self->{eme}->errstr, \$key, \%params);
+    }
+    $cyphertext = pack "u*", $cyphertext if $params{Armour};
+    return $cyphertext;
+}
+
+
+sub decrypt { 
+    my ($self, %params) = @_;
+    my $key = $params{Key}; 
+    my $cyphertext = $params{Cyphertext};
+    $cyphertext = unpack "u*", $cyphertext if $params{Armour};
+    my $plaintext;
+    my $blocksize = ((bitsize ($key->n)) / 8); 
+    my @segments = steak ($cyphertext, $blocksize);
+    for (@segments) {
+        $plaintext .= $self->{eme}->decrypt (Cyphertext=> $_, Key => $key)
+            || return $self->error ($self->{eme}->errstr, \$key, \%params);
+    }
+    return $plaintext;
+}
+ 
+
 1; 
+
 
 =head1 NAME
 
@@ -27,15 +102,45 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.23 $ (Beta)
- $Date: 2001/03/07 15:39:55 $
+ $Revision: 1.24 $ (Beta)
+ $Date: 2001/03/12 04:49:49 $
+
+=head1 SYNOPSIS
+
+    my $rsa = new Crypt::RSA; 
+
+    my ($public, $private) = $rsa->keygen ( ... ); 
+
+    my $cyphertext = $rsa->encrypt ( 
+                       Message    => $message,
+                       Key        => $public
+                       Armour     => 1,
+                    ) || die $rsa->errstr();
+
+    my $plaintext = $rsa->decrypt ( 
+                       Cyphertext => $message, 
+                       Key        => $private 
+                       Armour     => 1,
+                    ) || die $rsa->errstr();
+
+    my $signature = $rsa->sign ( 
+                       Message    => $message, 
+                       Key        => $private
+                    ) || die $rsa->errstr();
+
+    my $verify   = $rsa->verify (
+                       Message    => $message, 
+                       Signature  => $signature, 
+                       Key        => $public
+                    ) || die $rsa->errstr();
+
 
 =head1 DESCRIPTION
 
 Crypt::RSA is a pure-perl, cleanroom implementation of the RSA public-key
-cryptosystem, written atop the blazingly fast number theory library PARI.
-As far as possible, Crypt::RSA conforms with I<PKCS #1, RSA Cryptography
-Specifications v2.1>[13].
+cryptosystem, written atop the blazingly fast number theory library Pari.
+As far as possible, Crypt::RSA conforms with PKCS #1, RSA Cryptography
+Specifications v2.1[13].
 
 This implementation is structured as a bundle of modules that provide key
 pair generation and management, plaintext-aware encryption and digital
@@ -46,8 +151,17 @@ modules in the bundle.
 
 This is beta, and largely untested, software. Please use at your own risk!
 
-Due to lack of a suitable ASN.1 encoder in perl, ASN.1 encoded formats are
-not supported yet.
+ASN.1 encoded formats are not supported yet.
+
+=head1 METHODS
+
+=head2 B<new()>
+
+Constructor.
+
+=head2 B<keygen()>
+
+
 
 =head1 MODULES
 

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Private.pm,v 1.3 2001/03/07 15:04:35 vipul Exp $
+## $Id: Private.pm,v 1.4 2001/03/12 04:51:02 vipul Exp $
 
 package Crypt::RSA::Key::Private;
 use lib '../../../lib';
@@ -136,12 +136,14 @@ Crypt::RSA::Key::Private -- RSA Private Key Management.
            );
 
     $key->hide ();
-    $key->reveal ( Password => 'The earth hath bubbles' );
+
     $key->write  ( Filename => 'rsakeys/banquo.private'  );
 
     $akey = new Crypt::RSA::Private::Key (
-                 Filename => 'rsakeys-banque.private'
+                 Filename => 'rsakeys/banquo.private'
                 );   
+
+    $akey->reveal ( Password => 'The earth hath bubbles' );
 
 =head1 DESCRIPTION
 
