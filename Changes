@@ -4,6 +4,20 @@
 
 --------------------------------------------------------------------------
 
+1.55                                                     February 18, 2005
+
+ * Fixed a bug ::DataFormat::i2osp(), wherein there was an encoding problem 
+   when the most significant byte is 0x0100. Reported and patched by 
+   <jbarkdull@yahoo.com> <rt.cpan.org: Bug #11495>
+
+ * Fixed warnings in t/15-benchmark.t
+
+1.51                                                     February 25, 2003
+
+ * In Crypt::RSA::encrypt() and decrypt() added a check to ensure the
+   blocksize is greater than 0. Blocksize can be smaller than 0 if the RSA
+   key modulus is too small for a particular encoding.
+
 1.50                                                      January 08, 2003
 
   * In ::Key::generate() calls to ::Key::Private::write() and
@@ -14,7 +28,7 @@
 
   * Fixed version numbers on a few modules, so CPAN correctly reports the
     newer modules.
-
+                        
   * Fixed some documentation typos.
     
 

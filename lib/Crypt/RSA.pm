@@ -21,7 +21,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.50 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.55 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -94,12 +94,14 @@ sub encrypt {
     return $self->error ($key->errstr, \%params, $key, \$plaintext) 
         unless $key->check();
 
-    my $cyphertext;
-    my @segments = steak ($plaintext, 
-                          blocksize (
-                                $$self{es}->encryptblock (Key => $key), 
+    my $blocksize = blocksize ( $$self{es}->encryptblock (Key => $key),
                                 length($plaintext)
-                          ));
+                              );
+
+    return $self->error("Message too long.", \$key, \%params) if $blocksize <= 0;
+
+    my $cyphertext;
+    my @segments = steak ($plaintext, $blocksize);
     for (@segments) {
         $cyphertext .= $self->{es}->encrypt (Message => $_, Key => $key)
             || return $self->error ($self->{es}->errstr, \$key, \%params);
@@ -137,11 +139,13 @@ sub decrypt {
     }
 
     my $plaintext;
-    my @segments = steak ($cyphertext, 
-                          blocksize (
-                                $$self{es}->decryptblock (Key => $key), 
+    my $blocksize = blocksize ( $$self{es}->decryptblock (Key => $key),
                                 length($cyphertext)
-                          ));
+                              );
+
+    return $self->error("Message too long.") if $blocksize <= 0;
+
+    my @segments = steak ($cyphertext, $blocksize);
     for (@segments) {
         $plaintext .= $self->{es}->decrypt (Cyphertext=> $_, Key => $key)
             || return $self->error ($self->{es}->errstr, \$key, \%params);

@@ -231,7 +231,8 @@ mandatory keys:
 A string to be encrypted. The length of this string should not exceed k-42
 octets, where k is the octet length of the RSA modulus. If Message is
 longer than k-42, the method will fail and set $self->errstr to "Message
-too long."
+too long." This means the key must be at least _336_ bits long if you are
+to use OAEP.
 
 =item B<Key>
 

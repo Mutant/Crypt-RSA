@@ -1,0 +1,24 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Crypt-RSA
+version:      1.55
+version_from: lib/Crypt/RSA.pm
+installdirs:  site
+requires:
+    Class::Loader:                 2.00
+    Convert::ASCII::Armour:        0
+    Crypt::Blowfish:               0
+    Crypt::CBC:                    0
+    Crypt::Primes:                 0.38
+    Crypt::Random:                 0.34
+    Data::Buffer:                  0
+    Data::Dumper:                  0
+    Digest::MD2:                   0
+    Digest::MD5:                   0
+    Digest::SHA1:                  0
+    Math::Pari:                    2.001804
+    Sort::Versions:                0
+    Tie::EncryptedHash:            0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17

@@ -45,3 +45,4 @@ extradocs/crypt-rsa-interoperablity.pod
 
 # $Id: MANIFEST,v 1.17 2001/05/21 00:46:00 vipul Exp $ 
 
+META.yml                                 Module meta-data (added by MakeMaker)

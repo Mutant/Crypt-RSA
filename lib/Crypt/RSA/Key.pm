@@ -88,7 +88,7 @@ sub generate {
     $prikey->e ($$key{e} || $params{e});
     $prikey->p ($$key{p} || $params{p});
     $prikey->q ($$key{q} || $params{q});
-    
+
     $prikey->phi (($prikey->p - 1) * ($prikey->q - 1));
     my $m = Mod (1, $prikey->phi);
 

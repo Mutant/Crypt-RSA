@@ -34,7 +34,7 @@ sub i2osp {
         my $r = $d % $base;
         $d = ($d-$r) / $base;
         $result = chr($r) . $result;
-    } until ($d <= $base);
+    } until ($d < $base);
     $result = chr($d) . $result if $d != 0;
 
     if (length($result) < $l) { 

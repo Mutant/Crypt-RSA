@@ -27,7 +27,7 @@ sub new {
     if ($params{Filename}) { 
         bless $self, $class;
         $self = $self->read (%params);
-        return bless $self, $class; 
+        return bless $self, $class;
     } else { 
         return bless $self, $class;
     } 
