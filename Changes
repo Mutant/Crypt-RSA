@@ -1,8 +1,15 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.23 2001/05/24 13:09:00 vipul Exp $
+           $Id: Changes,v 1.24 2001/05/25 00:22:15 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.43                                                          May 25, 2001
+
+  * Specified the correct version number of Class::Loader in PREREQ_PM
+    hash of Makefile.PL.
+
+  * ::Key loads ::Key::Private and ::Key::Public by default.
 
 1.42                                                          May 24, 2001
   
