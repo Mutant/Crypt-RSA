@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Primitives.pm,v 1.9 2001/04/07 12:46:18 vipul Exp $
+## $Id: Primitives.pm,v 1.13 2001/05/23 22:31:49 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::Primitives; 
@@ -30,13 +30,17 @@ sub core_encrypt {
     # c = (m ** e) mod n 
 
     my ($self, %params) = @_;
-    my $key = $params{Key}; my $plaintext = $params{Plaintext};
+    my $key = $params{Key}; 
+    $self->error ("Bad key.", \%params, $key) unless $key->check();
+    my $plaintext = $params{Plaintext};
     debug ("pt == $plaintext");
+
+    my $e = $key->e; my $n = $key->n;
     return $self->error ("Numeric representation of plaintext is out of bound.", 
-                          \$plaintext, $key) if $plaintext > $key->n;
-    my $m = Mod ($plaintext, $key->n);
-    my $c = lift ($m**$key->e);
+                          \$plaintext, $key, \%params) if $plaintext > $n;
+    my $c = mod_exp($plaintext, $e, $n);
     debug ("ct == $c");
+    $n = undef; $e = undef;
     return $c;
 
 }
@@ -47,25 +51,29 @@ sub core_decrypt {
     # procedure: 
     # p = (c ** d) mod n
 
+
     my ($self, %params) = @_;
     my $key = $params{Key}; 
+    $self->error ("Bad key.") unless $key->check();
+
     my $cyphertext = $params{Cyphertext};
-    return $self->error ("Decryption error.") if $cyphertext > $key->n;
+    my $n = $key->n;
+    return $self->error ("Decryption error.") if $cyphertext > $n;
+
     my $pt;
     if ($key->p && $key->q) {
         my($p, $q, $d) = ($key->p, $key->q, $key->d);
-        $key->qinv (mod_inverse($p, $q)) unless $key->qinv;
+        $key->u (mod_inverse($p, $q)) unless $key->u;
         $key->dp ($d % ($p-1)) unless $key->dp;
         $key->dq ($d % ($q-1)) unless $key->dq;
-        my ($u, $dp, $dq) = ($key->qinv, $key->dp, $key->dq);
-        my $p2 = mod_exp($cyphertext % $p, $dp, $p);
-        my $q2 = mod_exp($cyphertext % $q, $dq, $q);
-        my $r = (($q2 - $p2) * $u) % $q;
-        $pt = $p2 + ($p * $r);
+        my $p2 = mod_exp($cyphertext % $p, $key->dp, $p);
+        my $q2 = mod_exp($cyphertext % $q, $key->dq, $q);
+        $pt = $p2 + ($p * ((($q2 - $p2) * $key->u) % $q));
     }
     else {
-        $pt = mod_exp ($cyphertext, $key->d, $key->n);
+        $pt = mod_exp ($cyphertext, $key->d, $n);
     }
+
     debug ("ct == $cyphertext");
     debug ("pt == $pt");
     return $pt;

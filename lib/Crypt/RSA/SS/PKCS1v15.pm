@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.3 2001/04/09 23:07:29 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.5 2001/05/20 23:37:49 vipul Exp $
 
 package Crypt::RSA::SS::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.3 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
@@ -64,8 +64,7 @@ sub sign {
 
     my $m = os2ip ($em);
     my $sig = $self->{primitives}->core_sign (Key => $key, Message => $m);
-    my $S = i2osp ($sig, $k);
-    return $S;
+    return i2osp ($sig, $k);
 
 }    
 
@@ -121,6 +120,17 @@ sub encode {
 sub version { 
     my $self = shift;
     return $self->{VERSION};
+}
+
+
+sub signblock { 
+    return -1;
+}
+
+
+sub verifyblock { 
+    my ($self, %params) = @_;
+    return octet_len($params{Key}->n);
 }
 
 

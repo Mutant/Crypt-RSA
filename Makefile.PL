@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Makefile.PL,v 1.7 2001/04/17 19:48:36 vipul Exp $
+## $Id: Makefile.PL,v 1.10 2001/05/21 00:46:00 vipul Exp $
 
 use ExtUtils::MakeMaker;
 WriteMakefile(
@@ -26,6 +26,8 @@ WriteMakefile(
                         'Digest::SHA1'           =>  0,
                         'Digest::MD5'            =>  0,
                         'Digest::MD2'            =>  0,
+                        'Class::Loader'          =>  0,
+                        'Data::Buffer'           =>  0,
                       } 
 );
 

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.6 2001/04/17 19:48:38 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.8 2001/04/23 04:12:18 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.6 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.8 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -41,9 +41,10 @@ sub encrypt {
     my $k = octet_len ($key->n);  debug ("octet_len of modulus: $k");
     my $em = $self->encode ($M, $k-1) || 
         return $self->error ($self->errstr, \$M, $key, \%params);
+        debug ("encoded: $em");
     my $m = os2ip ($em);
     my $c = $self->{primitives}->core_encrypt (Plaintext => $m, Key => $key);
-    my $ec = i2osp ($c, $k);  debug ("ec: $ec");
+    my $ec = i2osp ($c, $k);  debug ("cyphertext: $ec");
     return $ec;
 }    
 
@@ -89,12 +90,26 @@ sub decode {
     debug ("to decode: $em");
     my ($chr0, $chr2) = (chr(0), chr(2));
     my ($ps, $M);
-    unless ( ($ps, $M) = $em =~ /^$chr2(.{8,})$chr0(.*)$/s ) { 
+    unless ( ($ps, $M) = $em =~ /^$chr2(.*?)$chr0(.*)$/s ) { 
         return $self->error ("Decoding error.");
-    } 
+    }
+    return $self->error ("Decoding error.") if length($ps) < 8; 
 
     return $M;
 }
+
+
+sub encryptblock { 
+    my ($self, %params) = @_;
+    return octet_len ($params{Key}->n) - 11;
+} 
+
+
+sub decryptblock { 
+    my ($self, %params) = @_;
+    return octet_len ($params{Key}->n);
+}
+
 
 sub version {
     my $self = shift;

@@ -3,73 +3,70 @@
 ## Crypt::RSA - Pure-perl implementation of RSA encryption/signing
 ##              algorithms.
 ##
-## Copyright (c) 2000, Vipul Ved Prakash.  All rights reserved.
+## Copyright (c) 2000-2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.37 2001/04/17 19:48:37 vipul Exp $
+## $Id: RSA.pm,v 1.42 2001/05/24 13:09:01 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
-use lib '/home/vipul/PERL/crypto/armour/lib';
+use lib '/home/vipul/PERL/classloader/lib';
 use strict;
 use vars qw(@ISA $VERSION);
+use Class::Loader;
 use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::Key;
-use Crypt::RSA::ES::OAEP;
-use Crypt::RSA::SS::PSS;
 use Crypt::RSA::DataFormat qw(steak octet_len);
-use Crypt::RSA::Debug qw(debug);
 use Convert::ASCII::Armour;
 use Carp;
-use Data::Dumper;
 
-@ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.37 $' =~ /\s(\d+\.\d+)\s/; 
+@ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
+($VERSION) = '$Revision: 1.42 $' =~ /\s(\d+\.\d+)\s/; 
+
 
 my %DEFAULTS = ( 
-    'ES'    => {  Scheme  => "Crypt::RSA::ES::OAEP",
-                  Enoc    => 'n-42', # 42 octets less than size of n
-                  Dnoc    => 'n-0', 
-               },
-    'SS'    => {  Scheme  => "Crypt::RSA::SS::PSS",
-                  Snoc    => '-1',   # infinite
-                  Dnoc    => '-1'   
-               },
+    'ES'    => { Name  => 'OAEP_ES'    },
+    'SS'    => { Name  => 'PSS_SS'     },
+    'PP'    => { Name  => 'ASCII_PP'   },
 );
 
-my %ENCRYPTION_SCHEMES = (    
-            OAEP =>  { Module => "Crypt::RSA::ES::OAEP" },
-        PKCS1v21 =>  { Module => "Crypt::RSA::ES::OAEP" },
-        PKCS1v15 =>  { Module => "Crypt::RSA::ES::PKCS1v15" },
+
+my %KNOWNMAP = (
+
+  # ENCRYPTION SCHEMES
+
+            OAEP_ES =>  { Module => "Crypt::RSA::ES::OAEP"      },
+        PKCS1v21_ES =>  { Module => "Crypt::RSA::ES::OAEP"      },
+        PKCS1v15_ES =>  { Module => "Crypt::RSA::ES::PKCS1v15"  },
+
+  # SIGNATURE SCHEMES
+
+             PSS_SS =>  { Module => "Crypt::RSA::SS::PSS"       },
+        PKCS1v21_SS =>  { Module => "Crypt::RSA::SS::PSS"       },
+      PKCS1v15SS_SS =>  { Module => "Crypt::RSA::SS::PKCS1v15"  },
+
+  # POST PROCESSORS
+
+           ASCII_PP =>  { Module => "Convert::ASCII::Armour"    },
+
 );
 
-my %SIGNATURE_SCHEMES = ( 
-            OAEP =>  { Module => "Crypt::RSA::SS::OAEP" },
-        PKCS1v15 =>  { Module => "Crypt::RSA::SS::PKCS1v15", }
-);
-
-my %POST_PROCESSORS   = (  
-          Armour =>  { Module => "Convert::ASCII::Armour" },
-          Base64 =>  { Module => "Convert::ASCII::Armour", 
-                       Params => { Type => 'Base64' } },    
-);
-           
 
 sub new { 
 
     my ($class, %params) = @_;
     my %self = (%DEFAULTS, %params);
+    my $self = bless \%self, $class;
 
-    my $es    = $self{ES}{Scheme};
-    my $ss    = $self{SS}{Scheme};
-       eval   " require $es"; 
-       eval   " require $ss";
-    $self{es} = eval "${es}->new()";
-    $self{ss} = eval "${ss}->new()";
+    $self->_storemap (%KNOWNMAP); 
+    
+    for (qw(ES SS PP)) { 
+        $$self{$_} = { Name => $$self{$_} . "_$_" } unless ref $$self{$_};
+        $$self{lc($_)} = $self->_load ( %{$$self{$_}} );
+    }
 
-    $self{armour}   = new Convert::ASCII::Armour; 
-    $self{keychain} = new Crypt::RSA::Key; 
+    $$self{keychain} = new Crypt::RSA::Key; 
 
     return bless \%self, $class; 
 
@@ -79,6 +76,7 @@ sub new {
 sub keygen { 
 
     my ($self, %params) = @_;
+    $params{KF} = $$self{KF} if $$self{KF};
 
     my @keys;
     return (@keys = $self->{keychain}->generate (%params))
@@ -94,29 +92,26 @@ sub encrypt {
     my $plaintext         = $params{Message};
     my $key               = $params{Key}; 
 
-    my $blocksize;
-    my $k = octet_len ($key->n);
-    if ($$self{ES}{Enoc} =~ /\-(\d+)/) { 
-        $blocksize = $k - $1;
-        return $self->error ("Keysize too small.", \$plaintext, \$key) if $blocksize < 1;
-    }
-
     my $cyphertext;
-    my @segments = steak ($plaintext, $blocksize);
+    my @segments = steak ($plaintext, 
+                          blocksize (
+                                $$self{es}->encryptblock (Key => $key), 
+                                length($plaintext)
+                          ));
     for (@segments) {
         $cyphertext .= $self->{es}->encrypt (Message => $_, Key => $key)
             || return $self->error ($self->{es}->errstr, \$key, \%params);
     }
 
     if ($params{Armour} || $params{Armor}) { 
-        $cyphertext = $self->{armour}->armour ( 
-                             Object   => "RSA ENCRYPTED MESSAGE", 
-                             Headers  => { Scheme  => $self->{ES}->{Scheme}, 
-                                           Version => $self->{es}->version()
-                                         }, 
-                             Content  => { Cyphertext => $cyphertext },
-                             Compress => 1, 
-                            );
+        $cyphertext = $self->{pp}->armour ( 
+             Object   => 'RSA ENCRYPTED MESSAGE', 
+             Headers  => {  
+                Scheme  => $$self{ES}{Module} || ${$KNOWNMAP{$$self{ES}{Name}}}{Module},
+                Version => $self->{es}->version() }, 
+             Content  => { Cyphertext => $cyphertext },
+             Compress => 1, 
+        );
     } 
 
     return $cyphertext;
@@ -131,17 +126,17 @@ sub decrypt {
     my $key              = $params{Key}; 
 
     if ($params{Armour} || $params{Armor}) { 
-        my $decoded = $self->{armour}->unarmour ($cyphertext) ||
-            return $self->error ($self->{armour}->errstr());
+        my $decoded = $self->{pp}->unarmour ($cyphertext) ||
+            return $self->error ($self->{pp}->errstr());
         $cyphertext = $$decoded{Content}{Cyphertext}
     }
 
-    my $k = octet_len ($key->n);
-    # should be replaced by compute_blocksize( $k );
-    my $blocksize = $k;  
-
     my $plaintext;
-    my @segments = steak ($cyphertext, $blocksize);
+    my @segments = steak ($cyphertext, 
+                          blocksize (
+                                $$self{es}->decryptblock (Key => $key), 
+                                length($cyphertext)
+                          ));
     for (@segments) {
         $plaintext .= $self->{es}->decrypt (Cyphertext=> $_, Key => $key)
             || return $self->error ($self->{es}->errstr, \$key, \%params);
@@ -160,11 +155,11 @@ sub sign {
                         $params{Key}, \%params);
 
     if ($params{Armour} || $params{Armor}) { 
-        $signature      = $self->{armour}->armour ( 
+        $signature      = $self->{pp}->armour ( 
                Object   => "RSA SIGNATURE", 
-               Headers  => { Scheme  => $self->{SS}->{Scheme}, 
-                             Version => $self->{ss}->version() 
-                           }, 
+               Headers  => {  
+                    Scheme  => $$self{SS}{Module} || ${$KNOWNMAP{$$self{SS}{Name}}}{Module},
+                    Version => $self->{ss}->version() }, 
                Content  => { Signature => $signature },
         );
     }
@@ -179,8 +174,8 @@ sub verify {
     my ($self, %params) = @_;
 
     if ($params{Armour} || $params{Armor}) { 
-        my $decoded  = $self->{armour}->unarmour ($params{Signature}) ||
-            return $self->error ($self->{armour}->errstr());
+        my $decoded  = $self->{pp}->unarmour ($params{Signature}) ||
+            return $self->error ($self->{pp}->errstr());
         $params{Signature} = $$decoded{Content}{Signature}
     }
 
@@ -192,6 +187,15 @@ sub verify {
 }
 
 
+sub blocksize { 
+
+    my ($blocksize, $ptsize) = @_;
+    return $ptsize if $blocksize == -1;
+    return 0 if $blocksize < 1;
+    return $blocksize;
+        
+}
+
 1; 
 
 
@@ -201,84 +205,137 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.37 $ (Beta)
- $Date: 2001/04/17 19:48:37 $
+ $Revision: 1.42 $ (Beta)
+ $Date: 2001/05/24 13:09:01 $
 
 =head1 SYNOPSIS
 
     my $rsa = new Crypt::RSA; 
 
-    my ($public, $private) = $rsa->keygen ( 
-                      Identity  => 'Lord Macbeth <macbeth@glamis.com>',
-                      Size      => 2048,  
-                      Password  => 'A day so foul & fair', 
-                      Verbosity => 1,
-                    ) or die $rsa->errstr();
 
-    my $cyphertext = $rsa->encrypt ( 
-                       Message    => $message,
-                       Key        => $public
-                       Armour     => 1,
-                    ) || die $rsa->errstr();
+    my ($public, $private) = 
+        $rsa->keygen ( 
+            Identity  => 'Lord Macbeth <macbeth@glamis.com>',
+            Size      => 2048,  
+            Password  => 'A day so foul & fair', 
+            Verbosity => 1,
+        ) or die $rsa->errstr();
 
-    my $plaintext = $rsa->decrypt ( 
-                       Cyphertext => $message, 
-                       Key        => $private 
-                       Armour     => 1,
-                    ) || die $rsa->errstr();
 
-    my $signature = $rsa->sign ( 
-                       Message    => $message, 
-                       Key        => $private
-                    ) || die $rsa->errstr();
+    my $cyphertext = 
+        $rsa->encrypt ( 
+            Message    => $message,
+            Key        => $public
+            Armour     => 1,
+        ) || die $rsa->errstr();
 
-    my $verify   = $rsa->verify (
-                       Message    => $message, 
-                       Signature  => $signature, 
-                       Key        => $public
-                    ) || die $rsa->errstr();
 
+    my $plaintext = 
+        $rsa->decrypt ( 
+            Cyphertext => $message, 
+            Key        => $private 
+            Armour     => 1,
+        ) || die $rsa->errstr();
+
+
+    my $signature = 
+        $rsa->sign ( 
+            Message    => $message, 
+            Key        => $private
+        ) || die $rsa->errstr();
+
+
+    my $verify = 
+        $rsa->verify (
+            Message    => $message, 
+            Signature  => $signature, 
+            Key        => $public
+        ) || die $rsa->errstr();
+
+=head1 NOTE
+
+This manual assumes familiarity with public-key cryptography and the RSA
+algorithm. If you don't know what these are or how they work, please refer
+to the sci.crypt FAQ[15]. A formal treatment of RSA can be found in [1].
 
 =head1 DESCRIPTION
 
 Crypt::RSA is a pure-perl, cleanroom implementation of the RSA public-key
-cryptosystem, written atop the blazingly fast number theory library PARI.
-As far as possible, Crypt::RSA conforms with PKCS #1, RSA Cryptography
-Specifications v2.1[13].
+cryptosystem. It uses Math::Pari(3), a perl interface to the blazingly
+fast PARI library, for big integer arithmetic and number theoretic
+computations.
 
-Crypt::RSA is structured as a bundle of modules that provide arbitrary
-length key pair generation, plaintext-aware encryption (OAEP) and digital
-signatures with appendix (PSS). Crypt::RSA provides a convenient,
-scheme-independent interface to the other modules in the bundle.
+Crypt::RSA provides arbitrary size key-pair generation, plaintext-aware
+encryption (OAEP) and digital signatures with appendix (PSS). For
+compatibility with SSLv3, RSAREF2, PGP and other applications that follow
+the PKCS #1 v1.5 standard, it also provides PKCS #1 v1.5 encryption and
+signatures.
 
-=head1 WARNINGS
+Crypt::RSA is structured as bundle of modules that encapsulate different
+parts of the RSA cryptosystem. The RSA algorithm is implemented in
+Crypt::RSA::Primitives(3). Encryption schemes, located under
+Crypt::RSA::ES, and signature schemes, located under Crypt::RSA::SS, use
+the RSA algorithm to build encryption/signature schemes that employ secure
+padding. (See the note on Security of Padding Schemes.)
 
-=over 4
+The key generation engine and other functions that work on both components
+of the key-pair are encapsulated in Crypt::RSA::Key(3).
+Crypt::RSA::Key::Public(3) & Crypt::RSA::Key::Private(3) provide
+mechanisms for storage & retrival of keys from disk, decoding & encoding
+of keys in certain formats, and secure representation of keys in memory.
+Finally, the Crypt::RSA module provides a convenient, DWIM wrapper around
+the rest of the modules in the bundle.
 
-=item ASN.1 encoded formats are not supported yet.
+=head1 SECURITY OF PADDING SCHEMES
 
-=item This is beta, and largely untested, software. Please use at your own risk!
+It has been conclusively shown that textbook RSA is insecure[3,7]. Secure
+RSA requires that plaintext is padded in a specific manner before
+encryption and signing. There are four main standards for padding: PKCS
+#1 v1.5 encryption & signatures, and OAEP encryption & PSS signatures.
+Crypt::RSA implements these as four modules that 
+provide overloaded encrypt(), decrypt(), sign() and verify() methods that
+add padding functionality to the basic RSA operations.
 
-=back
+Crypt::RSA::ES::PKCS1v15(3) implements PKCS #1 v1.5 encryption,
+Crypt::RSA::SS::PKCS1v15(3) implements PKCS #1 v1.5 signatures,
+Crypt::RSA::ES::OAEP(3) implements Optimal Asymmetric Encryption and
+Crypt::RSA::SS::PSS(3) Probabilistic Signatures.
+
+PKCS #1 v1.5 schemes are older and hence more widely deployed, but PKCS #1
+v1.5 encryption has certain flaws that make it vulnerable to
+chosen-cyphertext attacks[9]. Even though Crypt::RSA works around these
+vulnerabilities, it is recommended that new applications use OAEP and PSS,
+both of which are provably secure[13]. In any event,
+Crypt::RSA::Primitives (without padding) should never be used directly.
+
+That said, there exists a scheme called Simple RSA[16] that provides
+security without padding. However, Crypt::RSA doesn't implement this
+scheme yet.
 
 =head1 METHODS
 
-=head2 B<new()>
+=over 4
 
-Constructor.
+=item B<new()>
 
-=head2 B<keygen()>
+The constructor. When no arguments are provided, new() returns an object
+loaded with default values. This object can be customized by specifying
+encryption & signature schemes, key formats and post processors. For
+details see the section on B<Customizing the Crypt::RSA
+object> later in this manpage.
 
-keygen() is a synonym for Crypt::RSA::Key::generate(). See
-Crypt::RSA::Key(3) manpage for usage details.
+=item B<keygen()>
 
-=head2 B<encrypt()>
+keygen() generates and returns an RSA key-pair of specified bitsize.
+keygen() is a synonym for Crypt::RSA::Key::generate(). Parameters and
+return values are described in the Crypt::RSA::Key(3) manpage.
+
+=item B<encrypt()>
 
 encrypt() performs RSA encryption on a string of arbitrary length with a
-public key using the encryption scheme bound to the object at creation.
-The default scheme is OAEP, implemented in Crypt::RSA::ES::OAEP(3).
-encrypt() returns cyphertext (a string) on success and a non-true value on
-failure. It takes a hash as argument with following keys:
+public key using the encryption scheme bound to the object. The default
+scheme is OAEP. encrypt() returns cyphertext (a string) on success and
+undef on failure. It takes a hash as argument with following keys:
 
 =over 4
 
@@ -288,91 +345,95 @@ An arbitrary length string to be encrypted.
 
 =item B<Key>
 
-Public key of the recipient, a Crypt::RSA::Key::Public object.
+Public key of the recipient, a Crypt::RSA::Key::Public(3) or
+compatible object.
 
 =item B<Armour>
 
-An optional boolean parameter that causes encrypt() to encode the
-cyphertext as a 6-bit clean ASCII message.
+A boolean parameter that forces cyphertext through a post processor after
+encrpytion. The default post processor is Convert::ASCII::Armour(3) that
+encodes binary octets in 6-bit clean ASCII messages. The cyphertext is
+returned as-is, when the Armour key is not present.
 
 =back
 
-=head2 B<decrypt()>
+=item B<decrypt()>
 
 decrypt() performs RSA decryption with a private key using the encryption
-scheme bound to the object at creation. The default scheme is OAEP,
-implemented in Crypt::RSA::ES::OAEP(3). decrypt() returns plaintext on
-success and a non-true value on failure. It takes a hash as argument with
-following keys:
+scheme bound to the object. The default scheme is OAEP. decrypt() returns
+plaintext on success and undef on failure. It takes a hash as argument
+with following keys:
 
 =over 4
 
 =item B<Cyphertext>
 
-Encrypted text or arbitrary length. 
+Cyphertext of arbitrary length. 
 
 =item B<Key>
 
-Private key, a Crypt::RSA::Key::Private object.
+Private key, a Crypt::RSA::Key::Private(3) or compatible object.
 
 =item B<Armour> 
 
-Boolean parameter that specifies whether the Cyphertext is encoded in
-6-bit ASCII.
+Boolean parameter that specifies whether the Cyphertext is encoded with a
+post processor.
 
 =back
 
-=head2 B<sign()>
+=item B<sign()>
 
 sign() creates an RSA signature on a string with a private key using the
-signature scheme bound to the object at creation. The default scheme is
-PSS, implemented in Crypt::RSA::SS::PSS(3). sign() returns a signature on
-success and a non-true value on failure. It takes a hash as argument
-with following keys:
+signature scheme bound to the object. The default scheme is
+PSS. sign() returns a signature on success and undef on failure. It takes
+a hash as argument with following keys:
 
 =over 4
 
 =item B<Message>
 
-A string to be signed. 
+A string of arbitrary length to be signed.
 
 =item B<Key>
 
-Private key of the sender, a Crypt::RSA::Key::Private object.
+Private key of the sender, a Crypt::RSA::Key::Private(3) or
+compatible object.
 
 =item B<Armour>
 
-An optional boolean parameter that causes sign() to encode the
-signature as a 6-bit clean ASCII message.
+A boolean parameter that forces the computed signature to be post
+processed.
 
 =back
 
-=head2 B<verify()>
+=item B<verify()>
 
 verify() verifies an RSA signature with a public key using the signature
-scheme bound to the object at creation. The default scheme is
-PSS, implemented in Crypt::RSA::SS::PSS(3). verify() returns a true 
-value on success and a non-true value on failure. It takes a hash as argument
+scheme bound to the object. The default scheme is PSS. verify() returns a
+true value on success and undef on failure. It takes a hash as argument
 with following keys:
 
 =over 4 
 
 =item B<Message>
 
-The original signed message, a string of arbitrary length.
+A signed message, a string of arbitrary length. 
 
 =item B<Key>
 
-Public key of the signer, a Crypt::RSA::Key::Public object.
+Public key of the signer, a Crypt::RSA::Key::Public(3) or
+compatible object.
 
 =item B<Sign> 
 
-Signature computed with sign(), a string.
+A signature computed with sign().
 
 =item B<Armour>
 
-Boolean parameter that specifies whether the Signature is encoded in
-6-bit ASCII.
+Boolean parameter that specifies whether the Signature has been 
+post processed.
+
+=back
 
 =back
 
@@ -413,13 +474,53 @@ PKCS #1 v1.5 signature scheme.
 
 =back
 
+=head1 CUSTOMISING A CRYPT::RSA OBJECT
+
+A Crypt::RSA object can be customized by passing any of the following keys
+in a hash to new(): ES to specify the encryption scheme, SS to specify the
+signature scheme, PP to specify the post processor, and KF to specify the
+key format. The value associated with these keys can either be a name (a
+string) or a hash reference that specifies a module name, its constructor,
+and constructor arguments. For example:
+
+    my $rsa = new Crypt::RSA ( ES => 'OAEP' );
+
+                    or 
+
+    my $rsa = new Crypt::RSA ( ES => { Module => 'Crypt::RSA::ES::OAEP' } );
+
+A module thus specified need not be included in the Crypt::RSA bundle, but
+it must be interface compatible with the ones provided with Crypt::RSA.
+
+As of this writing, the following names are recognised:
+
+=over 4
+
+=item B<ES> (Encryption Scheme) 
+
+    'OAEP', 'PKCS1v15'
+
+=item B<SS> (Signature Scheme) 
+
+    'PSS', 'PKCS1v15'
+
+=item B<KF> (Key Format) 
+
+    'Native', 'SSH'
+
+=item B<PP> (Post Processor) 
+
+    'ASCII' 
+
+=back 
+
 =head1 ERROR HANDLING
 
-All modules in the Crypt::RSA bundle use a common error handling method.
-When a method fails it returns a non-true value and sets $self->errstr
-to a string that explains the reason for the error. Private keys and
-plaintext representations passed to the method in question are wiped
-from memory.
+All modules in the Crypt::RSA bundle use a common error handling method
+(implemented in Crypt::RSA::Errorhandler(3)). When a method fails it
+returns undef and calls $self->error() with the error message. This error
+message is available to the caller through the errstr() method. For more
+details see the Crypt::RSA::Errorhandler(3) manpage.
 
 =head1 AUTHOR
 
@@ -427,9 +528,10 @@ Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to Ilya Zakharevich for answering even the goofiest of my questions
-regarding Math::Pari with unwavering patience. Shizukesa on #perl for
-clueing me into the error handling method used in this module and a-mused
+Thanks to Ilya Zakharevich for help with Math::Pari, Benjamin Trott for
+several patches including SSH key support, Genèche Ramanoudjame for
+extensive testing and numerous bug reports, Shizukesa on #perl for
+suggesting the error handling method used in this module, and Dave Paris
 for good advice.
 
 =head1 LICENSE 
@@ -444,18 +546,21 @@ Crypt::RSA::Primitives(3), Crypt::RSA::DataFormat(3),
 Crypt::RSA::Errorhandler(3), Crypt::RSA::Debug(3), Crypt::Primes(3),
 Crypt::Random(3), Crypt::CBC(3), Crypt::Blowfish(3),
 Tie::EncryptedHash(3), Convert::ASCII::Armour(3), Math::Pari(3),
-crypt-rsa-interoperability(3), crypt-rsa-interoperability-table(3).
+Class::Loader(3), crypt-rsa-interoperability(3),
+crypt-rsa-interoperability-table(3).
 
 =head1 MAILING LIST
 
-pac@lists.vipul.net is a mailing list for discussing development of
-asymmetric cryptography modules in perl. Please send Crypt::RSA related
-communications directly to the list address. Subscription interface for
-pac is at http://lists.vipul.net/mailman/listinfo/pac/
+pac@lists.vipul.net is a mailing list for discussing the usage &
+development of asymmetric cryptography modules in perl. Please post
+Crypt::RSA related communications directly to the list address. Before you
+post though, take a moment to grep through the list archives at
+<URL:http://lists.vipul.net/mailman/listinfo/pac/> to see if your question
+has already been answered there.
 
 =head1 BIBLIOGRAPHY
 
-(Chronologically sorted.)
+Chronologically sorted (for the most part).
 
 =over 4
 
@@ -483,9 +588,14 @@ pac is at http://lists.vipul.net/mailman/listinfo/pac/
 
 =item 12 B<S. Simpson.> PGP DH vs. RSA FAQ v1.5 (1999).
 
-=item 13 B<RSA Laboratories> Draft I, PKCS #1 v2.1: RSA Cryptography Standard (1999).
+=item 13 B<RSA Laboratories.> Draft I, PKCS #1 v2.1: RSA Cryptography Standard (1999).
 
 =item 14 B<E. Young, T. Hudson, OpenSSL Team.> OpenSSL 0.9.5a source code (2000).
+
+=item 15 B<Several Authors.> The sci.crypt FAQ at
+http://www.faqs.org/faqs/cryptography-faq/part01/index.html
+
+=item 16 B<Victor Shoup.> A Proposal for an ISO Standard for Public Key Encryption (2001).
 
 =cut
 

@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: DataFormat.pm,v 1.11 2001/04/09 23:07:26 vipul Exp $
+## $Id: DataFormat.pm,v 1.13 2001/05/20 23:37:45 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA::DataFormat; 
@@ -25,19 +25,18 @@ require Exporter;
 
 sub i2osp {
     my $num = PARI(shift); 
+    my $d = $num;
     my $l = shift || 0;
     my $base = PARI(256); my $result = '';
     if ($l) { return if $num > $base ** $l }
-    DECOMP: {
-        my $r = $num % $base; 
-        my $d = PARI($num-$r) / $base;
+
+    do { 
+        my $r = $d % $base;
+        $d = ($d-$r) / $base;
         $result = chr($r) . $result;
-        if ($d >= $base) {
-            $num = $d; redo DECOMP;
-        } elsif ($d != 0) {
-            $result = chr($d) . $result
-        }
-    }
+    } until ($d <= $base);
+    $result = chr($d) . $result if $d != 0;
+
     if (length($result) < $l) { 
         $result = chr(0)x($l-length($result)) . $result;
     }
@@ -48,14 +47,13 @@ sub i2osp {
 sub os2ip {
     my $string = shift;
     my $base = PARI(256);
-    my $result = PARI(0);
+    my $result = 0;
     my $l = length($string); 
     for (0 .. $l-1) {
         my ($c) = unpack "x$_ a", $string;
         my $a = int(ord($c));
         my $val = int($l-$_-1); 
-        my $b = PARI($base) ** $val;
-        $result += PARI($a) * $b;
+        $result += $a * ($base**$val);
     }
     return $result;
 }
@@ -119,7 +117,6 @@ sub mgf1 {
 
 sub steak { 
     my ($text, $blocksize) = @_; 
-    print "blocksize: $blocksize\n";
     my $textsize = length($text);
     my $chunkcount = $textsize % $blocksize 
         ? int($textsize/$blocksize) + 1 : $textsize/$blocksize;

@@ -44,7 +44,6 @@ print $pkey->n =~ m/^Blowfish/ ? "ok" : "not ok"; print " ", ++$i, "\n";
 print $pkey->d =~ m/^Blowfish/ ? "ok" : "not ok"; print " ", ++$i, "\n";
 
 $pkey->reveal ( Password => 'a day so foul and fair' );
-my $ref = ref $$pkey{private}; 
 
 print $pkey->n == $n ? "ok" : "not ok"; print " ", ++$i, "\n";
 print $pkey->d == $d ? "ok" : "not ok"; print " ", ++$i, "\n";

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.3 2001/04/17 19:48:40 vipul Exp $
+## $Id: PSS.pm,v 1.4 2001/04/23 04:12:21 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SS::PSS;
@@ -20,7 +20,7 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.3 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.4 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
@@ -132,9 +132,21 @@ sub mgf {
     return mgf1 (@data);
 }
 
+
 sub version { 
     my $self = shift;
     return $self->{VERSION};
+}
+
+
+sub signblock { 
+    return -1;
+}
+
+
+sub verifyblock { 
+    my ($self, %params) = @_;
+    return octet_len($params{Key}->n);
 }
 
 

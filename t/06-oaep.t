@@ -13,13 +13,16 @@ use lib 'lib';
 use Crypt::RSA::ES::OAEP;
 use Crypt::RSA::Key;
 
-print "1..1\n";
+print "1..2\n";
 my $i = 0;
 my $oaep = new Crypt::RSA::ES::OAEP;
 my $message = "My plenteous joys, Wanton in fullness, seek to hide themselves.";
 my $keychain = new Crypt::RSA::Key;
-my ($pub, $priv) = $keychain->generate ( Size => 1024, Password => 'xx', Identity => 'xx', Verbosity => 1 );
-die $keychain->errstr() if $keychain->errstr();
+my ($pub, $priv) = $keychain->generate ( Size => 1024, Password => 'xx', Identity => 'xx', Verbosity => 1 ) or 
+                    die $keychain->errstr();
+
+
+print 86 == $oaep->encryptblock(Key => $pub) ? "ok" : "not ok"; print " ", ++$i, "\n";
 
 my $ct = $oaep->encrypt (Key => $pub, Message => $message);
      die $oaep->errstr unless $ct;

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.21 2001/04/17 19:48:38 vipul Exp $
+## $Id: OAEP.pm,v 1.22 2001/04/23 04:12:18 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::ES::OAEP; 
@@ -22,7 +22,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.21 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.22 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -157,18 +157,22 @@ sub mgf {
 }
 
 
+sub encryptblock { 
+    my ($self, %params) = @_;
+    return octet_len ($params{Key}->n) - 42;
+} 
+
+
+sub decryptblock { 
+    my ($self, %params) = @_;
+    return octet_len ($params{Key}->n);
+}
+
+
 # should be able to call this as a class method.
 sub version {
     my $self = shift;
     return $self->{VERSION};
-}
-
-
-sub ident { 
-
-# class method
-# return distinguished name, version, eblocksize, dblocksize 
-
 }
 
 

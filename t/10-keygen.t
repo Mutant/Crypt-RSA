@@ -14,7 +14,7 @@ use Crypt::RSA::Key;
 use Data::Dumper;
 
 my $i = 0;
-print "1..10\n";
+print "1..15\n";
 my $keychain = new Crypt::RSA::Key; 
 
 for my $ksize (qw(128 256 512 768 1024)) { 
@@ -27,6 +27,8 @@ for my $ksize (qw(128 256 512 768 1024)) {
     die $keychain->errstr if $keychain->errstr();
     print $pub->Identity eq 'mail@vipul.net' ? "ok" : "not ok"; print " ", ++$i, "\n";
     print $pub->n eq $pri->p * $pri->q  ? "ok" : "not ok"; print " ", ++$i, "\n";
+    $pri->check || die $pri->errstr();
+    print $pri->check  ? "ok" : "not ok"; print " ", ++$i, "\n";
 
 }
 

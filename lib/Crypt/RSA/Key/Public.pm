@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Public.pm,v 1.5 2001/03/31 04:02:07 vipul Exp $
+## $Id: Public.pm,v 1.6 2001/04/23 04:12:19 vipul Exp $
 
 package Crypt::RSA::Key::Public;
 use lib '../../../lib', 'lib';
@@ -15,7 +15,10 @@ use vars qw($AUTOLOAD);
 use Crypt::RSA;
 use Carp;
 use Data::Dumper;
+use Crypt::RSA::Errorhandler;
 use Math::Pari qw(PARI pari2pv);
+use vars qw(@ISA);
+@ISA = qw(Crypt::RSA::Errorhandler);
 
 sub new { 
 
@@ -62,6 +65,15 @@ sub DESTROY {
 }
 
 
+sub check { 
+
+    my $self = shift;
+    return $self->error ("Incomplete key.") unless $self->n && $self->e;
+    return 1;
+
+}
+
+
 sub write { 
 
     my ($self, %params) = @_; 
@@ -103,6 +115,7 @@ sub deserialize {
     return $self;
 
 }
+
     
 1;
 

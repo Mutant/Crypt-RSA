@@ -13,8 +13,6 @@ use lib 'lib';
 use Crypt::RSA;
 use Crypt::RSA::Debug qw(debuglevel);
 
-debuglevel (1);
-
 print "1..8\n";
 my $i = 0;
 my $rsa = new Crypt::RSA;

@@ -14,7 +14,9 @@ lib/Crypt/RSA/DataFormat.pm
 lib/Crypt/RSA/Primitives.pm
 lib/Crypt/RSA/Key.pm
 lib/Crypt/RSA/Key/Public.pm
+lib/Crypt/RSA/Key/Public/SSH.pm
 lib/Crypt/RSA/Key/Private.pm
+lib/Crypt/RSA/Key/Private/SSH.pm
 lib/Crypt/RSA/Debug.pm
 lib/Crypt/RSA/ES/OAEP.pm
 lib/Crypt/RSA/ES/PKCS1v15.pm
@@ -36,9 +38,10 @@ t/11-wrapper.t
 t/12-versioning.t
 t/13-es-pkcs1v15.t
 t/14-ss-pkcs1v15.t
+t/15-benchmark.t
 
 extradocs/crypt-rsa-interoperablity-template.pod
 extradocs/crypt-rsa-interoperablity.pod
 
-# $Id: MANIFEST,v 1.15 2001/04/09 22:21:47 vipul Exp $ 
+# $Id: MANIFEST,v 1.17 2001/05/21 00:46:00 vipul Exp $ 
 

@@ -6,26 +6,39 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Key.pm,v 1.8 2001/04/07 12:46:18 vipul Exp $
+## $Id: Key.pm,v 1.12 2001/05/23 22:31:49 vipul Exp $
 
 package Crypt::RSA::Key; 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 use lib "/home/vipul/PERL/crypto/primes/lib";
+use lib "/home/vipul/PERL/classloader/lib";
 use strict;
-use vars qw(@ISA $VERSION);
+use vars                   qw(@ISA $VERSION);
+use Class::Loader;
 use Crypt::RSA::Errorhandler;
-use Crypt::Primes qw(rsaparams);
+use Crypt::Primes          qw(rsaparams);
 use Crypt::RSA::DataFormat qw(bitsize);
-use Crypt::RSA::Key::Public; 
-use Crypt::RSA::Key::Private; 
-use Math::Pari qw(PARI Mod lift);
-@ISA = qw(Crypt::RSA::Errorhandler);
-use Data::Dumper;
+use Math::Pari             qw(PARI Mod lift);
+@ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
 
-($VERSION)  = '$Revision: 1.8 $' =~ /\s(\d+\.\d+)\s/; 
+
+($VERSION)  = '$Revision: 1.12 $' =~ /\s(\d+\.\d+)\s/; 
+
+
+my %MODMAP = ( 
+    Native_PKF => { Module => "Crypt::RSA::Key::Public" },
+    Native_SKF => { Module => "Crypt::RSA::Key::Private" },
+       SSH_PKF => { Module => "Crypt::RSA::Key::Public::SSH"  }, 
+       SSH_SKF => { Module => "Crypt::RSA::Key::Private::SSH" }, 
+);
+
 
 sub new { 
-    return bless {}, shift;
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+    $self->_storemap ( %MODMAP );
+    return $self;
 }
 
 
@@ -35,8 +48,8 @@ sub generate {
 
     my $key;
     unless ($params{q} && $params{p} && $params{e}) { 
-        return $self->error ("Missing argument.") unless 
-            $params{Size} && $params{Password} && $params{Identity};
+
+        return $self->error ("Missing argument.") unless $params{Size};
 
         return $self->error ("Keysize too small.") if 
             $params{Size} < 48;
@@ -53,23 +66,39 @@ sub generate {
             my $n = $$key{p} * $$key{q};
             $cbitsize = 1 if bitsize($n) == $params{Size}
         }
+
     } 
 
-    my $pubkey = new Crypt::RSA::Key::Public; 
-    my $prikey = new Crypt::RSA::Key::Private (Password => $params{Password});
+    if ($params{KF}) { 
+        $params{PKF} = { Name => "$params{KF}_PKF" };
+        $params{SKF} = { Name => "$params{KF}_SKF" }
+    }
+
+    my $pubload = $params{PKF} ? $params{PKF} : { Name => "Native_PKF" };
+    my $priload = $params{SKF} ? $params{SKF} : { Name => "Native_SKF" };
+
+    my $pubkey = $self->_load (%$pubload) || 
+        return $self->error ("Couldn't load the public key module.");
+    my $prikey = $self->_load ((%$priload), Args => ['Password', $params{Password} ]) || 
+        return $self->error ("Couldn't load the private key module.");
     $pubkey->Identity ($params{Identity});
     $prikey->Identity ($params{Identity});
 
     $pubkey->e ($$key{e} || $params{e});
+    $prikey->e ($$key{e} || $params{e});
     $prikey->p ($$key{p} || $params{p});
     $prikey->q ($$key{q} || $params{q});
-
+    
     $prikey->phi (($prikey->p - 1) * ($prikey->q - 1));
     my $m = Mod (1, $prikey->phi);
 
     $prikey->d (lift($m/$pubkey->e));
     $prikey->n ($prikey->p * $prikey->q);
     $pubkey->n ($prikey->n);
+
+    $prikey->dp ($prikey->d % ($prikey->p - 1));
+    $prikey->dq ($prikey->d % ($prikey->q - 1));
+    $prikey->u  (mod_inverse($prikey->p, $prikey->q));
 
     return $self->error ("d is too small. Regenerate.") if
         bitsize($prikey->d) < 0.25 * bitsize($prikey->n);
@@ -83,6 +112,13 @@ sub generate {
 
     return ($pubkey, $prikey);
 
+}
+
+
+sub mod_inverse {
+    my($a, $n) = @_;
+    my $m = Mod(1, $n);
+    lift($m / $a);
 }
 
 
@@ -100,8 +136,7 @@ Crypt::RSA::Key - RSA Key Pair Generator.
                               Size      => 2048,  
                               Password  => 'A day so foul & fair', 
                               Verbosity => 1,
-                             );
-    die $keychain->errstr() unless $public && $private;
+                             ) or die $keychain->errstr();
 
 =head1 DESCRIPTION
 
@@ -115,11 +150,12 @@ Constructor.
 
 =head2 generate()
 
-Generates an RSA key of specified bitsize. generate() returns a list of
+generate() generates an RSA key of specified bitsize. It returns a list of
 two elements, a Crypt::RSA::Key::Public object that holds the public part
 of the key pair and a Crypt::RSA::Key::Private object that holds that
-private part. On failure, it sets $self->errstr to appropriate error
-string. generate() takes a hash argument with the following keys:
+private part. On failure, it returns undef and sets $self->errstr to
+appropriate error string. generate() takes a hash argument with the
+following keys:
 
 =over 4
 
@@ -130,15 +166,15 @@ Bitsize is a mandatory argument.
 
 =item B<Password>
 
-String with which the private key will be encrypted. Password is a
-mandatory argument.
+String with which the private key will be encrypted. If Password is not
+provided the key will be stored unencrypted.
 
 =item B<Identity>
 
 A string that identifies the owner of the key. This string usually takes
 the form of a name and an email address. The identity is not bound to the
 key with a signature. However, a future release or another module will
-provide this facility. Identity is a mandatory argument.
+provide this facility. 
 
 =item B<Cipher>
 
@@ -148,7 +184,7 @@ and Tie::EncryptedHash(3).
 
 =item B<Verbosity> 
 
-When set to 1, generate() will draw a progress display on console.
+When set to 1, generate() will draw a progress display on STDOUT.
 
 =item B<Filename>
 
@@ -156,6 +192,24 @@ The generated key pair will be written to disk, in $Filename.public and
 $Filename.private files, if this argument is provided. Disk writes can be
 deferred by skipping this argument and achieved later with the write()
 method of Crypt::RSA::Key::Public(3) and Crypt::RSA::Key::Private(3).
+
+=item B<KF> 
+
+A string that specifies the key format. As of this writing, two key
+formats, `Native' and `SSH', are supported. KF defaults to `Native'.
+
+=item B<SKF> 
+
+Secret (Private) Key Format. Instead of specifying KF, the user could
+choose to specify secret and public key formats separately. The value for
+SKF can be a string ("Native" or "SSH") or a hash reference that specifies
+a module name, its constructor and constructor arguments. The specified
+module is loaded with Class::Loader(3) and must be interface compatible
+with Crypt::RSA::Key::Private(3).
+
+=item B<PKF> 
+
+Public Key Format. This option is like SKF but for the public key.
 
 =head1 ERROR HANDLING
 
@@ -173,7 +227,7 @@ Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 =head1 SEE ALSO
 
 Crypt::RSA(3), Crypt::RSA::Key::Public(3), Crypt::RSA::Key::Private(3), 
-Crypt::Primes(3), Tie::EncryptedHash(3)
+Crypt::Primes(3), Tie::EncryptedHash(3), Class::Loader(3)
 
 =cut
 

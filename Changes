@@ -1,8 +1,44 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.17 2001/04/17 19:53:05 vipul Exp $
+           $Id: Changes,v 1.23 2001/05/24 13:09:00 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.42                                                          May 24, 2001
+  
+  * Speed optimizations throughout. 
+
+  * Documented Crypt::RSA and Crypt::RSA::Key.
+
+  * ::Key::Private::read() will call reveal() if the password is provided
+    at construction. 
+
+  * Added support for unencrypted keys to ::Key::Private.
+
+  * ::Key::Private does not convert pari2pv at every STORE().
+    Tie::EncryptedHash is created explicitely at hide().
+    
+  * Put together ::Key::Private::SSH from Benjamin Trott's patches and
+    wrote ::Key::Public::SSH. ::Key::Private::SSH's CBC encryption is 
+    not compatible with SSH yet.
+
+  * Documented the Crypt::RSA error handling mechanism in
+    Crypt::RSA::Errorhandler.
+
+  * Encryption schemes, signature schemes and post processors are now
+    loaded at runtime in Crypt::RSA. Suitable values for these can be
+    specified at object construction. Primary reason for this is to
+    interface with modules not included in the Crypt::RSA bundle.
+
+  * Wrote ::Key::Private::check() and ::Key::Public::check(). Key checks
+    happen automagically in ::Primitives.
+
+  * ::Key::generate() computes dp, dq, u (parameters required for
+    decrypting with CRT) and stores them in the private key.
+
+  * Fixed another bug in ::ES::PKCS1v15, where a greedy regex was slurping
+    up part of the plaintext when plaintext had a null character.
+    
 
 1.37                                                        April 17, 2001
 
@@ -123,6 +159,5 @@
  * Wrote Crypt::RSA::encrypt() and Crypt:RSA::decrypt()
 
  * Wrote a test for Crypt::RSA (t/11-wrapper.t)
-
 
 

@@ -1,7 +1,7 @@
 
 
                            TODO for Crypt::RSA
-            $Id: TODO,v 1.23 2001/04/17 19:48:36 vipul Exp $
+            $Id: TODO,v 1.25 2001/05/20 23:37:42 vipul Exp $
 
 -------------------------------------------------------------------------------
 P No Task                                              Status
@@ -42,8 +42,8 @@ P No Task                                              Status
      if an exception is raised in these methods
      (Suggestion by magister on #perl: 
       Use DBI's error handling method) 
-* 16 Add support for Math::Pari bigints to 
-     Convert::ASN1. 
+  16 Add support for Math::Pari bigints to             Apr 19 2001  1200
+     Convert::ASN1.  <ben@rhumba.pair.com>                                  
   17 Add support for DER encoding in Convert::ASN1.    Postponed.
   18 Replace mod2int with Math::Pari::lift()           Feb 14 2001  0300 
   19 Implement core_sign() and core_verify()           Feb 12 2001  1330 
@@ -94,7 +94,7 @@ P No Task                                              Status
   28 Add support for version specific operations       Mar 31 2001  0400
      in EME::* and SSA::*.  Version number 
      should be provided at new()
-* 29 Crypt::RSA should be able to use non-native 
+  29 Crypt::RSA should be able to use non-native       Apr 29 2001  0400
      key formats through a mechanism similar to 
      variable EME/SSA support.
   30 Consider renaming EME to ES and SSA to SS.        Mar 31 2001  1500
@@ -108,14 +108,13 @@ P No Task                                              Status
   32 Write Crypt::RSA::EME|SSA::RSAREF2                Apr 06 2001  1930
      (as ::ES/SS::PKCS1v15)
 * 33 Write Crypt::RSA::EME|SSA::Textbook
-* 34 Write a note in documentation on insecurity of
+  34 Write a note in documentation on insecurity of    Apr 30 2001  0300
      Textbook RSA.  Also explain the concept of 
      Schemes.
-* 35 Search CPAN for message passing modules, 
-     to automatically cascade Crypt::RSA::*->errstr
-     messages.
-* 36 Remove use lib 'locallib' from all modules 
+* 35 Remove use lib 'locallib' from all modules 
      in production version. (nhuillard@ghs.fr)
+* 36 Fix parameterization in ::ES::OAEP and 
+     ::ES::PSS 
  
 -------------------------------------------------------------------------------
 
