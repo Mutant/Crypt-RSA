@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Private.pm,v 1.13 2001/06/11 13:41:56 vipul Exp $
+## $Id: Private.pm,v 1.14 2001/06/18 14:37:51 vipul Exp $
 
 package Crypt::RSA::Key::Private;
 use lib '../../../../lib', 'lib', '../lib';
@@ -20,7 +20,7 @@ use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
 use vars qw(@ISA);
 
-($VERSION) = '$Revision: 1.13 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.14 $' =~ /\s(\d+\.\d+)\s/; 
 @ISA       = qw(Crypt::RSA::Errorhandler);
 
 
@@ -117,6 +117,9 @@ sub check {
         ($self->n && $self->d) || ($self->n && $self->p && $self->q);
 
     if ($self->p && $self->q) { 
+        return $self->error ("n is not a number.") if $self->n =~ /\D/;
+        return $self->error ("p is not a number.") if $self->p =~ /\D/;
+        return $self->error ("p is not a number.") if $self->p =~ /\D/;
         return $self->error ("n is not p*q."  ) unless $self->n == $self->p * $self->q;
         return $self->error ("p is not prime.") unless isprime($self->p);
         return $self->error ("q is not prime.") unless isprime($self->q);
@@ -124,6 +127,7 @@ sub check {
 
     if ($self->e) { 
         # d * e == 1 mod lcm(p-1, q-1)
+        return $self->error ("e is not a number.") if $self->e =~ /\D/;
         my $k = lcm (($self->p -1), ($self->q -1));
         my $K = Mod (1, $k); my $KI = lift($K * $self->d * $self->e);
         return $self->error ("Bad `d'.") unless $KI == 1;

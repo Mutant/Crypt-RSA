@@ -1,8 +1,14 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.26 2001/06/11 13:41:54 vipul Exp $
+           $Id: Changes,v 1.27 2001/06/18 14:37:47 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.46                                                         June 18, 2001
+
+  * encrypt()/decrypt() routines everywhere do a key check before calling
+    octet_len() and die gracefully when passed a bad key. Thanks to
+    Nicolas Huillard for pointing out the bugs.
 
 1.45                                                         June 11, 2001
 

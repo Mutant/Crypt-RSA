@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.22 2001/04/23 04:12:18 vipul Exp $
+## $Id: OAEP.pm,v 1.23 2001/06/18 14:37:50 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::ES::OAEP; 
@@ -22,7 +22,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.22 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.23 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -45,7 +45,8 @@ sub new {
 
 sub encrypt { 
     my ($self, %params) = @_; 
-    my $key = $params{Key}; my $M = $params{Message};
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
+    return $self->error ($key->errstr, \$M, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);  debug ("octet_len of modulus: $k");
     my $em = $self->encode ($M, $self->{P}, $k-1) || 
         return $self->error ($self->errstr, \$M, $key, \%params);
@@ -59,6 +60,7 @@ sub encrypt {
 sub decrypt { 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $C = $params{Cyphertext}; 
+    return $self->error ($key->errstr, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);  
     my $c = os2ip ($C);
     if (bitsize($c) > bitsize($key->n)) { 

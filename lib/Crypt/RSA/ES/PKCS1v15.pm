@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.8 2001/04/23 04:12:18 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.9 2001/06/18 14:37:50 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.8 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.9 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -37,7 +37,8 @@ sub new {
 
 sub encrypt { 
     my ($self, %params) = @_; 
-    my $key = $params{Key}; my $M = $params{Message};
+    my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
+    return $self->error ($key->errstr, \$M, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);  debug ("octet_len of modulus: $k");
     my $em = $self->encode ($M, $k-1) || 
         return $self->error ($self->errstr, \$M, $key, \%params);
@@ -52,6 +53,7 @@ sub encrypt {
 sub decrypt { 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $C = $params{Cyphertext}; 
+    return $self->error ($key->errstr, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);
     my $c = os2ip ($C);
     debug ("bitsize(c): " . bitsize($c));
