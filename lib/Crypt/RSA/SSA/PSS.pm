@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.10 2001/03/07 01:21:09 vipul Exp $
+## $Id: PSS.pm,v 1.11 2001/03/12 16:17:34 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SSA::PSS;
@@ -114,12 +114,14 @@ sub verify_with_salt_recovery {
 
 
 sub hash { 
-    return sha1 (@_);
+    my ($self, $data) = @_;
+    return sha1 ($data);
 }
     
 
 sub mgf { 
-    return mgf1 (@_);
+    my ($self, @data) = @_;
+    return mgf1 (@data);
 }
 
 1;

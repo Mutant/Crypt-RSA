@@ -12,7 +12,7 @@ use lib '../lib';
 use lib 'lib';
 use Crypt::RSA;
 
-print "1..1\n";
+print "1..8\n";
 my $i = 0;
 my $rsa = new Crypt::RSA;
 
@@ -50,27 +50,48 @@ my $plaintext =<<'EOM';
 
 EOM
 
-my ($pub, $pri) = $rsa->keygen ( 
-                    Size      => 512, 
-                    Verbosity => 1, 
-                    Identity  => "Lord Macbeth",
-                    Password  => "xx"
-                  ) or die $rsa->errstr();
+for my $keysize (qw(512 1024)) { 
 
-my $ctxt = $rsa->encrypt ( 
-                    Message => $plaintext,
-                    Key     => $pub,
-                    Armour  => 1,
-                 ) || die $rsa->errstr();
+    my ($pub, $pri) = $rsa->keygen ( 
+                        Size      => $keysize, 
+                        Verbosity => 1, 
+                        Identity  => "Lord Macbeth",
+                        Password  => "xx"
+                      ) or die $rsa->errstr();
 
-print "$ctxt\n";
+    my $ctxt = $rsa->encrypt ( 
+                        Message => $plaintext,
+                        Key     => $pub,
+                        Armour  => 1,
+                     ) || die $rsa->errstr();
 
-my $ptxt = $rsa->decrypt (
-                    Cyphertext => $ctxt, 
-                    Key        => $pri,
-                    Armour     => 1, 
-                 ) || die $rsa->errstr();
-print $ptxt;
+    print "$ctxt\n";
 
-print $ptxt eq $plaintext  ? "ok" : "not ok"; print " ", ++$i, "\n";
+    print $ctxt ? "ok" : "not ok"; print " ", ++$i, "\n";
 
+    my $ptxt = $rsa->decrypt (
+                        Cyphertext => $ctxt, 
+                        Key        => $pri,
+                        Armour     => 1, 
+                     ) || die $rsa->errstr();
+
+    print $ptxt;
+
+    print $ptxt eq $plaintext  ? "ok" : "not ok"; print " ", ++$i, "\n";
+
+    my $signature = $rsa->sign ( 
+                        Message => $plaintext, 
+                        Key => $pri
+                    ) || die $rsa->errstr();
+
+    print $signature ? "ok" : "not ok"; print " ", ++$i, "\n";
+
+    my $verify = $rsa->verify (
+                    Message => $plaintext, 
+                    Key => $pub, 
+                    Signature => $signature,
+                 );
+
+    print $verify ? "ok" : "not ok"; print " ", ++$i, "\n";
+
+}

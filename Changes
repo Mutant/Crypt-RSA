@@ -1,7 +1,26 @@
-1.24 - March 11, 2001
+
+                        Changelog for Crypt::RSA
+           $Id: Changes,v 1.1 2001/03/12 16:17:30 vipul Exp $
+
+--------------------------------------------------------------------------
+
+1.25                                                        March 12, 2001
+
+ 1 Wrote Crypt::RSA::sign() and Crypt::RSA::verify()
+
+ 2 Added tests for sign and verify to t/11-wrapper.t
+
+ 3 Bugfix in Crypt::RSA::EME::OAEP::hash() and mgf()
+     $self was being fed to the digest
+
+ 4 Bugfix in Crypt::RSA::SSA::PSS::hash() and mgf()
+     same error as 3
+ 
+
+1.24                                                        March 11, 2001
 
  1 Bug fix in Crypt::RSA::EME::OAEP::decode()
-    newline in plaintext was causing decode() to return error.
+    newline in plaintext was causing decode() to return error
 
  2 Wrote Crypt::RSA::encrypt() and Crypt:RSA::decrypt()
 

@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: DataFormat.pm,v 1.8 2001/03/12 04:50:05 vipul Exp $
+## $Id: DataFormat.pm,v 1.9 2001/03/12 16:17:32 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA::DataFormat; 
@@ -91,7 +91,7 @@ sub octet_xor {
 
 
 sub mgf1 {
-    my ($self, $seed, $l) = @_;
+    my ($seed, $l) = @_;
     my $hlen = 20;  my ($T, $i) = ("",0);
     while ($i <= $l) { 
         my $C = i2osp (int($i), 4);

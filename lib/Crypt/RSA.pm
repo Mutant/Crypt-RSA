@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.24 2001/03/12 04:49:49 vipul Exp $
+## $Id: RSA.pm,v 1.25 2001/03/12 16:17:31 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -24,7 +24,7 @@ use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
 
-($VERSION) = '$Revision: 1.24 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.25 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
     'EME'    => { Scheme      => "Crypt::RSA::EME::OAEP",
@@ -40,7 +40,6 @@ my %DEFAULTS = (
 sub new { 
     my ($class, %params) = @_;
     my %self = (%DEFAULTS, %params);
-
 
     # replace literals with $self{EME} and $self{PSS}
     $self{keychain}  = new Crypt::RSA::Key; 
@@ -91,7 +90,23 @@ sub decrypt {
     }
     return $plaintext;
 }
- 
+
+
+sub sign { 
+    my ($self, %params) = @_;
+    my $signature = $self->{ssa}->sign (%params) || 
+        return $self->error ($self->{ssa}->errstr, $params{Key}, \%params);
+    return $signature;
+} 
+
+
+sub verify { 
+    my ($self, %params) = @_;
+    my $verify = $self->{ssa}->verify (%params) || 
+        return $self->error ($self->{ssa}->errstr, $params{Key}, \%params);
+    return $verify;
+}
+
 
 1; 
 
@@ -102,8 +117,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.24 $ (Beta)
- $Date: 2001/03/12 04:49:49 $
+ $Revision: 1.25 $ (Beta)
+ $Date: 2001/03/12 16:17:31 $
 
 =head1 SYNOPSIS
 
@@ -161,7 +176,13 @@ Constructor.
 
 =head2 B<keygen()>
 
+=head2 B<encrypt()>
 
+=head2 B<decrypt()>
+
+=head2 B<sign()>
+
+=head2 B<verify()>
 
 =head1 MODULES
 

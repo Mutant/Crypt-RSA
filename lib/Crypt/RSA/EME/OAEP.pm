@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.10 2001/03/12 04:50:58 vipul Exp $
+## $Id: OAEP.pm,v 1.11 2001/03/12 16:17:33 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::EME::OAEP; 
@@ -19,12 +19,13 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 use Carp;
+# use Data::Dumper;
 @ISA = qw(Crypt::RSA::Errorhandler);
 
 
 sub new { 
     return bless { primitives => new Crypt::RSA::Primitives, 
-                   P => "Crypt::RSA $Crypt::RSA::VERSION",
+                   P => "Crypt::RSA",
                    hlen => 20,
                  }, shift 
 }
@@ -73,9 +74,9 @@ sub encode {
     my $phash = $self->hash ($P);
     my $db = $phash . $PS . chr(1) . $M; 
     my $seed = generate_random_octet ($hlen);
-    my $dbmask = $self->mgf1 ($seed, $emlen-$hlen);
+    my $dbmask = $self->mgf ($seed, $emlen-$hlen);
     my $maskeddb = octet_xor ($db, $dbmask);
-    my $seedmask = $self->mgf1 ($maskeddb, $hlen);
+    my $seedmask = $self->mgf ($maskeddb, $hlen);
     my $maskedseed = octet_xor ($seed, $seedmask);
     my $em = $maskedseed . $maskeddb;
 
@@ -98,12 +99,13 @@ sub decode {
     my ($self, $em, $P) = @_; 
     my $hlen = $$self{hlen};
 
+    debug ("P == $P");
     return $self->error ("Decoding error.", \$P) if length($em) < 2*$hlen+1;
     my $maskedseed = substr $em, 0, $hlen; 
     my $maskeddb = substr $em, $hlen; 
-    my $seedmask = $self->mgf1 ($maskeddb, $hlen);
+    my $seedmask = $self->mgf ($maskeddb, $hlen);
     my $seed = octet_xor ($maskedseed, $seedmask);
-    my $dbmask = $self->mgf1 ($seed, length($em) - $hlen);
+    my $dbmask = $self->mgf ($seed, length($em) - $hlen);
     my $db = octet_xor ($maskeddb, $dbmask); 
     my $phash = $self->hash ($P); 
 
@@ -117,6 +119,7 @@ sub decode {
     debug ("dbmask == $dbmask [" . length($dbmask) . "]"); 
 
     my ($phashorig) = substr $db, 0, $hlen;
+    debug ("phashorig == $phashorig [" . length($phashorig) . "]"); 
     return $self->error ("Decoding error.", \$P) unless $phashorig eq $phash; 
     $db = substr $db, $hlen;
     my ($chr0, $chr1) = (chr(0), chr(1));
@@ -131,12 +134,14 @@ sub decode {
 
 
 sub hash { 
-    return sha1 (@_); 
+    my ($self, $data) = @_;
+    return sha1 ($data);
 }
 
 
 sub mgf {
-    return mgf1 (@_);
+    my ($self, @data) = @_;
+    return mgf1 (@data);
 }
 
 
