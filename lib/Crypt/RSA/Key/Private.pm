@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Private.pm,v 1.14 2001/06/18 14:37:51 vipul Exp $
+## $Id: Private.pm,v 1.15 2001/09/25 14:11:22 vipul Exp $
 
 package Crypt::RSA::Key::Private;
 use lib '../../../../lib', 'lib', '../lib';
@@ -20,7 +20,7 @@ use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
 use vars qw(@ISA);
 
-($VERSION) = '$Revision: 1.14 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.15 $' =~ /\s(\d+\.\d+)\s/; 
 @ISA       = qw(Crypt::RSA::Errorhandler);
 
 
@@ -232,14 +232,14 @@ Crypt::RSA::Key::Private -- RSA Private Key Management.
 
 =head1 SYNOPSIS
 
-    $key = new Crypt::RSA::Private::Key (
+    $key = new Crypt::RSA::Key::Private (
                 Identity => 'Lord Banquo <banquo@lochaber.com>',
                 Password => 'The earth hath bubbles',
            );
 
-    $key->hide ();
+    $key->hide();
 
-    $key->write  ( Filename => 'rsakeys/banquo.private'  );
+    $key->write( Filename => 'rsakeys/banquo.private'  );
 
     $akey = new Crypt::RSA::Key::Private (
                  Filename => 'rsakeys/banquo.private'
@@ -249,7 +249,64 @@ Crypt::RSA::Key::Private -- RSA Private Key Management.
 
 =head1 DESCRIPTION
 
-[coming soon]
+Crypt::RSA::Key::Private provides basic private key management
+functionality for Crypt::RSA private keys. Following methods are
+available:
+
+=over 4 
+
+=item B<new()>
+
+The constructor. Takes a hash, usually with two arguments: C<Filename> and
+C<Password>. C<Filename> indicates a file from which the private key
+should be read. More often than not, private keys are kept encrypted with
+a symmetric cipher and MUST be decrypted before use. When a C<Password>
+argument is provided, the key is also decrypted before it is returned by
+C<new()>. Here's a complete list of arguments accepted by C<new()> (all of
+which are optional):
+
+=over 4
+
+=item Identity 
+
+A string identifying the owner of the key. Canonically, a name and
+email address.
+
+=item Filename 
+
+Name of the file that contains the private key. 
+
+=item Password
+
+Password with which the private key is encrypted, or should be encrypted
+(in case of a new key).
+
+=item Cipher 
+
+Name of the symmetric cipher in which the private key is encrypted (or
+should be encrypted). The default is "Blowfish" and possible values
+include DES, IDEA, Twofish and other ciphers supported by Crypt::CBC.
+
+=back
+
+=item B<reveal()>
+
+If the key is not decrypted at C<new()>, it can be decrypted by calling
+C<reveal()> with a C<Password> argument.
+
+=item B<hide()>
+
+C<hide()> causes the key to be encrypted by the chosen symmetric cipher
+and password.
+
+=item B<write()>
+
+Causes the key to be written to a disk file specified by the
+C<Filename> argument. C<write()> will call C<hide()> before writing the
+key to disk. If you wish to store the key in plain, don't specify a
+password at C<new()>.
+
+=back
 
 =head1 AUTHOR
 

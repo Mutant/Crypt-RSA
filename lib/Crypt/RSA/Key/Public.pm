@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Public.pm,v 1.7 2001/06/11 13:41:56 vipul Exp $
+## $Id: Public.pm,v 1.8 2001/09/25 14:11:23 vipul Exp $
 
 package Crypt::RSA::Key::Public;
 use lib '../../../lib', 'lib';
@@ -135,7 +135,21 @@ Crypt::RSA::Key::Public -- RSA Public Key Management.
 
 =head1 DESCRIPTION
 
-[coming soon]
+Crypt::RSA::Key::Public provides basic key management functionality for
+Crypt::RSA public keys. Following methods are available:
+
+=over 4
+
+=item B<new()>
+
+The constructor. Reads the public key from a disk file when called with a
+C<Filename> argument.
+
+=item B<write()>
+
+Writes a public key to disk when called with a C<Filename> argument.
+
+=over
 
 =head1 AUTHOR
 

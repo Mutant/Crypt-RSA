@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.47 2001/06/22 23:27:34 vipul Exp $
+## $Id: RSA.pm,v 1.48 2001/09/25 12:44:55 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -22,7 +22,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.47 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.48 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -111,7 +111,8 @@ sub encrypt {
              Object   => 'RSA ENCRYPTED MESSAGE', 
              Headers  => {  
                 Scheme  => $$self{ES}{Module} || ${$KNOWNMAP{$$self{ES}{Name}}}{Module},
-                Version => $self->{es}->version() }, 
+                Version => $self->{es}->version() 
+             }, 
              Content  => { Cyphertext => $cyphertext },
              Compress => 1, 
         );
@@ -210,18 +211,17 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.47 $ (Beta)
- $Date: 2001/06/22 23:27:34 $
+ $Revision: 1.48 $ (Beta)
+ $Date: 2001/09/25 12:44:55 $
 
 =head1 SYNOPSIS
 
     my $rsa = new Crypt::RSA; 
 
-
     my ($public, $private) = 
         $rsa->keygen ( 
             Identity  => 'Lord Macbeth <macbeth@glamis.com>',
-            Size      => 2048,  
+            Size      => 1024,  
             Password  => 'A day so foul & fair', 
             Verbosity => 1,
         ) or die $rsa->errstr();
@@ -230,15 +230,15 @@ Crypt::RSA - RSA public-key cryptosystem.
     my $cyphertext = 
         $rsa->encrypt ( 
             Message    => $message,
-            Key        => $public
+            Key        => $public,
             Armour     => 1,
         ) || die $rsa->errstr();
 
 
     my $plaintext = 
         $rsa->decrypt ( 
-            Cyphertext => $message, 
-            Key        => $private 
+            Cyphertext => $cyperhtext, 
+            Key        => $private,
             Armour     => 1,
         ) || die $rsa->errstr();
 
