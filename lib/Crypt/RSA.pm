@@ -7,13 +7,13 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.20 2001/03/07 15:04:31 vipul Exp $
+## $Id: RSA.pm,v 1.23 2001/03/07 15:39:55 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA;
 use Carp;
 
-($VERSION) = '$Revision: 1.20 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.23 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     return bless { P => "Crypt::RSA $VERSION" }, shift; 
@@ -27,8 +27,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.20 $ (Beta)
- $Date: 2001/03/07 15:04:31 $
+ $Revision: 1.23 $ (Beta)
+ $Date: 2001/03/07 15:39:55 $
 
 =head1 DESCRIPTION
 
@@ -46,8 +46,8 @@ modules in the bundle.
 
 This is beta, and largely untested, software. Please use at your own risk!
 
-Due to the lack of a suitable ASN.1 encoder in perl, ASN.1 encoded formats
-are not supported yet.
+Due to lack of a suitable ASN.1 encoder in perl, ASN.1 encoded formats are
+not supported yet.
 
 =head1 MODULES
 
@@ -81,7 +81,7 @@ Probablistic Signature Scheme based on RSA.
 
 =head1 ERROR HANDLING
 
-All modules in the Crypt::RSA bundle use the same error handling method.
+All modules in the Crypt::RSA bundle use a common error handling method.
 When a method fails it returns a non-true value and sets $self->errstr
 to a string that explains the reason for the error. Private keys and
 plaintext representations passed to the method in question are wiped
@@ -110,6 +110,13 @@ Crypt::RSA::Primitives(3), Crypt::RSA::DataFormat(3),
 Crypt::RSA::Errorhandler(3), Crypt::RSA::Debug(3), Crypt::Primes(3),
 Crypt::Random(3), Crypt::CBC(3), Crypt::Blowfish(3), Tie::EncryptedHash(3),
 Math::Pari(3).
+
+=head1 MAILING LIST
+
+pac@lists.vipul.net is a mailing list for discussing development of
+asymmetric cryptography modules in perl. Please send Crypt::RSA related
+communications directly to the list address. Subscription interface for
+pac is at http://lists.vipul.net/mailman/listinfo/pac/
 
 =head1 BIBLIOGRAPHY
 
@@ -146,4 +153,5 @@ Math::Pari(3).
 =item 14 B<E. Young, T. Hudson, OpenSSL Team.> OpenSSL 0.9.5a source code (2000).
 
 =cut
+
 

@@ -1,13 +1,13 @@
 #!/usr/bin/perl -sw
 ##
-## Crypt::RSA::Errorhandler -- Base class that provide error 
+## Crypt::RSA::Errorhandler -- Base class that provides error 
 ##                             handling functionality.
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Errorhandler.pm,v 1.2 2001/03/05 01:10:45 vipul Exp $
+## $Id: Errorhandler.pm,v 1.3 2001/03/07 15:23:35 vipul Exp $
 
 package Crypt::RSA::Errorhandler; 
 use strict;
@@ -43,4 +43,17 @@ sub errstr {
 
 
 1;
+
+
+=head1 NAME
+
+Crypt::RSA::Errorhandler - Parent class for Crypt::RSA::*, provides error handling capabilities.
+
+
+=head1 AUTHOR
+
+Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
+
+=cut
+
 
