@@ -1,7 +1,7 @@
 
 
                            TODO for Crypt::RSA
-            $Id: TODO,v 1.21 2001/04/06 18:34:35 vipul Exp $
+            $Id: TODO,v 1.22 2001/04/07 12:46:16 vipul Exp $
 
 -------------------------------------------------------------------------------
 P No Task                                              Status
@@ -27,8 +27,9 @@ P No Task                                              Status
    9 Read/write PGP 2.6i/5.x and GPG keys
      (Crypt::OpenPGP should do this, not us.)
   10 A comprehensive test suite                        Mar 03 2001  1900 
-* 11 Implement decryption using the Chinese
+  11 Implement decryption using the Chinese            Apr 07 2001  1300
      Remainder Theorem (in core_decrypt()).
+     (Patch by Benjamin Trott)
 * 12 Resolve endianness issues.
   13 Move OAEP code to Crypt::RSA::EME::OAEP           Feb 12 2001  2000
   14 Ensure n is exactly specified number of           Mar 06 2001  2315
@@ -49,24 +50,24 @@ P No Task                                              Status
      + clock calls to core_encrypt()/decrypt()      
        in evals and return appropriate error
        messages. 
-  19 Signature with appendix Crypt::RSA::PKCS15       Postponed.
+  19 Signature with appendix Crypt::RSA::PKCS15        Postponed.
      (Requires ASN1) 
-  20 Signature with appendix (randomized)             Feb 19 2001  2030 
+  20 Signature with appendix (randomized)              Feb 19 2001  2030 
      Crypt::RSA::SSA::PSS 
-  21 Split the code into modules listed in            Feb 14 2001  2100 
+  21 Split the code into modules listed in             Feb 14 2001  2100 
      MANIFEST 
-     + Update tests.                                  Feb 14 2001  2100 
-  22 Use the DBI error handling method.               Feb 15 2001  2300
-  23 Plaintext and key material should                Feb 15 2001  2300 
+     + Update tests.                                   Feb 14 2001  2100 
+  22 Use the DBI error handling method.                Feb 15 2001  2300
+  23 Plaintext and key material should                 Feb 15 2001  2300 
      we wiped out from memory at error
      and DESTROY() 
-     + Implement Crypt::RSA::Key::DESTROY             Mar 03 2001  1500
-  24 Move mgf1 to Crypt::RSA::DataFormat              Feb 15 2001  2100 
+     + Implement Crypt::RSA::Key::DESTROY              Mar 03 2001  1500
+  24 Move mgf1 to Crypt::RSA::DataFormat               Feb 15 2001  2100 
      and wrap in a method in 
      EME::OAEP, SSA::PSS
-  25 Rename Cyphertext to Ciphertext in               Mar 06 2001  2315
+  25 Rename Cyphertext to Ciphertext in                Mar 06 2001  2315
      Crypt::RSA::Primitives::decrypt()
-  26 Restructre Key modules into                      Mar 02 2001  2100
+  26 Restructre Key modules into                       Mar 02 2001  2100
      Crypt::RSA::Key
      Crypt::RSA::Key::Public 
      %key = ( version  => ...,
@@ -85,13 +86,13 @@ P No Task                                              Status
              __q      => prime, 
             )
 * 27 $key->check before operations
-  28 Add support for version specific operations      March 31 2001  0400
+  28 Add support for version specific operations       Mar 31 2001  0400
      in EME::* and SSA::*.  Version number 
      should be provided at new()
 * 29 Crypt::RSA should be able to use non-native 
      key formats through a mechanism similar to 
      variable EME/SSA support.
-  30 Consider renaming EME to ES and SSA to SS.       March 31 2001  1500
+  30 Consider renaming EME to ES and SSA to SS.        Mar 31 2001  1500
      (Renamed EME to ES, SSA to SS)
 * 31 Re-orgazine Crypt::RSA::Primitives.  
      core_encrypt|decrypt|sign|verify() should be
@@ -99,7 +100,7 @@ P No Task                                              Status
      exponent or the decryption exponent depending
      on the type of key passed.  Also implement 
      decryption with CRT here.
-  32 Write Crypt::RSA::EME|SSA::RSAREF2               April 06 2001  1930
+  32 Write Crypt::RSA::EME|SSA::RSAREF2                Apr 06 2001  1930
      (as ::ES/SS::PKCS1v15)
 * 33 Write Crypt::RSA::EME|SSA::Textbook
 * 34 Write a note in documentation on insecurity of
@@ -108,8 +109,7 @@ P No Task                                              Status
 * 35 Search CPAN for message passing modules, 
      to automatically cascade Crypt::RSA::*->errstr
      messages.
-* 36 keygen < 384 bits (nhuillard@ghs.fr)
-* 37 Remove use lib 'locallib' from all modules 
+* 36 Remove use lib 'locallib' from all modules 
      in production version. (nhuillard@ghs.fr)
  
 -------------------------------------------------------------------------------

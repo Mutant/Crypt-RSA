@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Primitives.pm,v 1.8 2001/03/31 02:45:23 vipul Exp $
+## $Id: Primitives.pm,v 1.9 2001/04/07 12:46:18 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::Primitives; 
@@ -51,11 +51,24 @@ sub core_decrypt {
     my $key = $params{Key}; 
     my $cyphertext = $params{Cyphertext};
     return $self->error ("Decryption error.") if $cyphertext > $key->n;
-    my $m = Mod ($cyphertext, $key->n);
-    my $p = lift ($m**$key->d);
+    my $pt;
+    if ($key->p && $key->q) {
+        my($p, $q, $d) = ($key->p, $key->q, $key->d);
+        $key->qinv (mod_inverse($p, $q)) unless $key->qinv;
+        $key->dp ($d % ($p-1)) unless $key->dp;
+        $key->dq ($d % ($q-1)) unless $key->dq;
+        my ($u, $dp, $dq) = ($key->qinv, $key->dp, $key->dq);
+        my $p2 = mod_exp($cyphertext % $p, $dp, $p);
+        my $q2 = mod_exp($cyphertext % $q, $dq, $q);
+        my $r = (($q2 - $p2) * $u) % $q;
+        $pt = $p2 + ($p * $r);
+    }
+    else {
+        $pt = mod_exp ($cyphertext, $key->d, $key->n);
+    }
     debug ("ct == $cyphertext");
-    debug ("pt == $p");
-    return $p;
+    debug ("pt == $pt");
+    return $pt;
 
 }
 
@@ -75,6 +88,20 @@ sub core_verify {
     $params{Plaintext} = $params{Signature};
     return $self->core_encrypt (%params); 
 
+}
+
+
+sub mod_inverse {
+    my($a, $n) = @_;
+    my $m = Mod(1, $n);
+    lift($m / $a);
+}
+
+
+sub mod_exp {
+    my($a, $exp, $n) = @_;
+    my $m = Mod($a, $n);
+    lift($m ** $exp);
 }
 
 

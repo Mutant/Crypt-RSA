@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Private.pm,v 1.6 2001/03/31 08:20:09 vipul Exp $
+## $Id: Private.pm,v 1.7 2001/04/07 12:46:19 vipul Exp $
 
 package Crypt::RSA::Key::Private;
 use lib '../../../../lib', 'lib';
@@ -31,7 +31,9 @@ sub new {
         $self->{private} = new Tie::EncryptedHash 
                             __password => $params{Password}, 
                             __cipher   => $cipher;
-        return bless $self, $class;
+        bless $self, $class;
+        $self->Identity ($params{Identity}) if $params{Identity};
+        return $self;
     } 
 
 } 
@@ -40,7 +42,7 @@ sub new {
 sub AUTOLOAD { 
     my ($self, $value) = @_;
     my $key = $AUTOLOAD; $key =~ s/.*:://;
-    if ($key =~ /^n|d|p|q|dp|dq|qinv$/) { 
+    if ($key =~ /^(n|d|p|q|dp|dq|qinv|phi)$/) { 
         if (ref $value eq 'Math::Pari') { 
             $self->{private}{"_$key"} = pari2pv($value)
         } elsif ($value && !(ref $value)) { 

@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.33 2001/04/06 18:34:38 vipul Exp $
+## $Id: RSA.pm,v 1.34 2001/04/07 16:53:39 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -25,7 +25,7 @@ use Carp;
 use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.33 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.34 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
     'ES'    => { Scheme  => "Crypt::RSA::ES::OAEP",
@@ -183,8 +183,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.33 $ (Beta)
- $Date: 2001/04/06 18:34:38 $
+ $Revision: 1.34 $ (Beta)
+ $Date: 2001/04/07 16:53:39 $
 
 =head1 SYNOPSIS
 
@@ -425,7 +425,8 @@ terms as Perl itself.
 Crypt::RSA::Primitives(3), Crypt::RSA::DataFormat(3),
 Crypt::RSA::Errorhandler(3), Crypt::RSA::Debug(3), Crypt::Primes(3),
 Crypt::Random(3), Crypt::CBC(3), Crypt::Blowfish(3),
-Tie::EncryptedHash(3), Convert::ASCII::Armour(3), Math::Pari(3).
+Tie::EncryptedHash(3), Convert::ASCII::Armour(3), Math::Pari(3),
+crypt-rsa-interoperability(3), crypt-rsa-interoperability-table(3).
 
 =head1 MAILING LIST
 

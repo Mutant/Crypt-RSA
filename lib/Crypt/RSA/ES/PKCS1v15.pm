@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1v15.pm,v 1.2 2001/04/06 18:34:42 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.3 2001/04/07 16:53:40 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -20,7 +20,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.2 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.3 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -102,7 +102,7 @@ sub version {
 
 =head1 NAME
 
-Crypt::RSA::ES::PKCS1_v1_5 - PKCS #1 v1.5 padded encryption scheme based on RSA.
+Crypt::RSA::ES::PKCS1v15 - PKCS #1 v1.5 padded encryption scheme based on RSA.
 
 =head1 SYNOPSIS
 

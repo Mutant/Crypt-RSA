@@ -6,11 +6,11 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Makefile.PL,v 1.5 2001/04/06 18:34:35 vipul Exp $
+## $Id: Makefile.PL,v 1.6 2001/04/07 12:46:16 vipul Exp $
 
 use ExtUtils::MakeMaker;
 WriteMakefile(
-    'NAME'	       => 'Crypt::RSA',
+    'NAME'         => 'Crypt::RSA',
     'AUTHOR'       => 'Vipul Ved Prakash <mail@vipul.net>',
     'VERSION_FROM' => 'lib/Crypt/RSA.pm',
     'PREREQ_PM'    => { 
