@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Key.pm,v 1.6 2001/03/07 15:04:33 vipul Exp $
+## $Id: Key.pm,v 1.7 2001/03/26 07:42:59 vipul Exp $
 
 package Crypt::RSA::Key; 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -21,7 +21,7 @@ use Crypt::RSA::Key::Private;
 use Math::Pari qw(PARI Mod lift);
 @ISA = qw(Crypt::RSA::Errorhandler);
 
-($VERSION)  = '$Revision: 1.6 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.7 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     return bless {}, shift;
@@ -95,7 +95,7 @@ Crypt::RSA::Key - RSA Key Pair Generator.
 
     my $keychain = new Crypt::RSA::Key;
     my ($public, $private) = $keychain->generate ( 
-                              Identity  => 'Lord Macbeth <macbeth@glamis.no>',
+                              Identity  => 'Lord Macbeth <macbeth@glamis.com>',
                               Size      => 2048,  
                               Password  => 'A day so foul & fair', 
                               Verbosity => 1,
@@ -117,7 +117,7 @@ Constructor.
 Generates an RSA key of specified bitsize. generate() returns a list of
 two elements, a Crypt::RSA::Key::Public object that holds the public part
 of the key pair and a Crypt::RSA::Key::Private object that holds that
-private part. On failure, it sets $self->errstr to approriate error
+private part. On failure, it sets $self->errstr to appropriate error
 string. generate() takes a hash argument with the following keys:
 
 =over 4
@@ -153,7 +153,7 @@ When set to 1, generate() will draw a progress display on console.
 
 The generated key pair will be written to disk, in $Filename.public and
 $Filename.private files, if this argument is provided. Disk writes can be
-deffered by skipping this argument and achieved later with the write()
+deferred by skipping this argument and achieved later with the write()
 method of Crypt::RSA::Key::Public(3) and Crypt::RSA::Key::Private(3).
 
 =head1 ERROR HANDLING

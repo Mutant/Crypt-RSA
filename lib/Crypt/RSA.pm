@@ -7,104 +7,170 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.25 2001/03/12 16:17:31 vipul Exp $
+## $Id: RSA.pm,v 1.30 2001/03/26 08:04:20 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
-# use strict;
-use vars qw(@ISA);
+use lib '/home/vipul/PERL/crypto/armour/lib';
+use strict;
+use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::Key;
 use Crypt::RSA::EME::OAEP;
 use Crypt::RSA::SSA::PSS;
 use Crypt::RSA::DataFormat qw(bitsize steak);
 use Crypt::RSA::Debug qw(debug);
+use Convert::ASCII::Armour;
 use Carp;
 use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
-
-($VERSION) = '$Revision: 1.25 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.30 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
-    'EME'    => { Scheme      => "Crypt::RSA::EME::OAEP",
-                  Encryptsize => 'n-42', # 42 octets less than size of n
-                  Decryptsize => 'n-0', 
+    'EME'    => { Scheme  => "Crypt::RSA::EME::OAEP",
+                  Enoc    => 'n-42', # 42 octets less than size of n
+                  Dnoc    => 'n-0', 
                 },
-    'SSA'    => { Scheme     => "Crypt::RSA::SSA::PSS",
-                  Signsize   => '-1',   # infinite
-                  Verifysize => '-1'
-                }
+    'SSA'    => { Scheme  => "Crypt::RSA::SSA::PSS",
+                  Snoc    => '-1',   # infinite
+                  Dnoc    => '-1'    # infinite
+                },
 );
 
+
 sub new { 
+
     my ($class, %params) = @_;
     my %self = (%DEFAULTS, %params);
 
-    # replace literals with $self{EME} and $self{PSS}
-    $self{keychain}  = new Crypt::RSA::Key; 
-    $self{eme} = new Crypt::RSA::EME::OAEP;
-    $self{ssa} = new Crypt::RSA::SSA::PSS;
+    my $eme    = $self{EME}{Scheme};
+    my $ssa    = $self{SSA}{Scheme};
+       eval    " require $eme"; 
+       eval    " require $ssa";
+    $self{eme} = eval "${eme}->new()";
+    $self{ssa} = eval "${ssa}->new()";
+
+    $self{armour}   = new Convert::ASCII::Armour; 
+    $self{keychain} = new Crypt::RSA::Key; 
 
     return bless \%self, $class; 
+
 }
 
+
 sub keygen { 
+
     my ($self, %params) = @_;
-    my @keys = $self->{keychain}->generate (%params);
-    return @keys if @keys;
-    return $self->error ($self->{keychain}->errstr);
+
+    my @keys;
+    return (@keys = $self->{keychain}->generate (%params))
+                  ? @keys 
+                  : $self->error ($self->{keychain}->errstr);
+
 } 
 
 
 sub encrypt { 
-    my ($self, %params) = @_;
-    my $key = $params{Key}; 
-    my $plaintext = $params{Message};
-    my $cyphertext;
-    my $blocksize = ((bitsize ($key->n)) / 8); 
-    if ($$self{EME}{Encryptsize} =~ /\-(\d+)/) { 
-        $blocksize -= $1;
+
+    my ($self, %params)   = @_;
+    my $plaintext         = $params{Message};
+    my $key               = $params{Key}; 
+
+    my $blocksize;
+    my $k = ((bitsize ($key->n)) / 8); 
+    if ($$self{EME}{Enoc} =~ /\-(\d+)/) { 
+               $blocksize = $k - $1;
     }
+
+    my $cyphertext;
     my @segments = steak ($plaintext, $blocksize);
     for (@segments) {
         $cyphertext .= $self->{eme}->encrypt (Message => $_, Key => $key)
             || return $self->error ($self->{eme}->errstr, \$key, \%params);
     }
-    $cyphertext = pack "u*", $cyphertext if $params{Armour};
+
+    if ($params{Armour} || $params{Armor}) { 
+        $cyphertext = $self->{armour}->armour ( 
+                             Object   => "RSA ENCRYPTED MESSAGE", 
+                             Headers  => { Scheme  => $self->{EME}->{Scheme}, 
+                                           Version => $self->{eme}->version()
+                                         }, 
+                             Content  => { Cyphertext => $cyphertext },
+                             Compress => 1, 
+                            );
+    } 
+
     return $cyphertext;
+
 }
 
 
 sub decrypt { 
-    my ($self, %params) = @_;
-    my $key = $params{Key}; 
-    my $cyphertext = $params{Cyphertext};
-    $cyphertext = unpack "u*", $cyphertext if $params{Armour};
+
+    my ($self , %params) = @_;
+    my $cyphertext       = $params{Cyphertext};
+    my $key              = $params{Key}; 
+
+    if ($params{Armour} || $params{Armor}) { 
+        my $decoded = $self->{armour}->unarmour ($cyphertext) ||
+            return $self->error ($self->{armour}->errstr());
+        $cyphertext = $$decoded{Content}{Cyphertext}
+    }
+
+    my $k = ((bitsize ($key->n)) / 8); 
+    # should be replaced by compute_blocksize( $k );
+    my $blocksize = $k;  
+
     my $plaintext;
-    my $blocksize = ((bitsize ($key->n)) / 8); 
     my @segments = steak ($cyphertext, $blocksize);
     for (@segments) {
         $plaintext .= $self->{eme}->decrypt (Cyphertext=> $_, Key => $key)
             || return $self->error ($self->{eme}->errstr, \$key, \%params);
     }
+
     return $plaintext;
+
 }
 
 
 sub sign { 
+
     my ($self, %params) = @_;
-    my $signature = $self->{ssa}->sign (%params) || 
-        return $self->error ($self->{ssa}->errstr, $params{Key}, \%params);
+    my $signature = $self->{ssa}->sign (%params) 
+                 || return $self->error ($self->{ssa}->errstr,
+                        $params{Key}, \%params);
+
+    if ($params{Armour} || $params{Armor}) { 
+        $signature      = $self->{armour}->armour ( 
+               Object   => "RSA SIGNATURE", 
+               Headers  => { Scheme  => $self->{SSA}->{Scheme}, 
+                             Version => $self->{ssa}->version() 
+                           }, 
+               Content  => { Signature => $signature },
+        );
+    }
+
     return $signature;
+
 } 
 
 
 sub verify { 
+
     my ($self, %params) = @_;
+
+    if ($params{Armour} || $params{Armor}) { 
+        my $decoded  = $self->{armour}->unarmour ($params{Signature}) ||
+            return $self->error ($self->{armour}->errstr());
+        $params{Signature} = $$decoded{Content}{Signature}
+    }
+
     my $verify = $self->{ssa}->verify (%params) || 
         return $self->error ($self->{ssa}->errstr, $params{Key}, \%params);
+
     return $verify;
+
 }
 
 
@@ -117,14 +183,19 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.25 $ (Beta)
- $Date: 2001/03/12 16:17:31 $
+ $Revision: 1.30 $ (Beta)
+ $Date: 2001/03/26 08:04:20 $
 
 =head1 SYNOPSIS
 
     my $rsa = new Crypt::RSA; 
 
-    my ($public, $private) = $rsa->keygen ( ... ); 
+    my ($public, $private) = $rsa->keygen ( 
+                      Identity  => 'Lord Macbeth <macbeth@glamis.com>',
+                      Size      => 2048,  
+                      Password  => 'A day so foul & fair', 
+                      Verbosity => 1,
+                    ) or die $rsa->errstr();
 
     my $cyphertext = $rsa->encrypt ( 
                        Message    => $message,
@@ -153,20 +224,24 @@ Crypt::RSA - RSA public-key cryptosystem.
 =head1 DESCRIPTION
 
 Crypt::RSA is a pure-perl, cleanroom implementation of the RSA public-key
-cryptosystem, written atop the blazingly fast number theory library Pari.
+cryptosystem, written atop the blazingly fast number theory library PARI.
 As far as possible, Crypt::RSA conforms with PKCS #1, RSA Cryptography
 Specifications v2.1[13].
 
-This implementation is structured as a bundle of modules that provide key
-pair generation and management, plaintext-aware encryption and digital
-signatures with appendix. Crypt::RSA is a DWIM wrapper around the other
-modules in the bundle.
+Crypt::RSA is structured as a bundle of modules that provide arbitrary
+length key pair generation, plaintext-aware encryption (OAEP) and digital
+signatures with appendix (PSS). Crypt::RSA provides a convenient,
+scheme-independent interface to the other modules in the bundle.
 
 =head1 WARNINGS
 
-This is beta, and largely untested, software. Please use at your own risk!
+=over 4
 
-ASN.1 encoded formats are not supported yet.
+=item ASN.1 encoded formats are not supported yet.
+
+=item This is beta, and largely untested, software. Please use at your own risk!
+
+=back
 
 =head1 METHODS
 
@@ -176,19 +251,117 @@ Constructor.
 
 =head2 B<keygen()>
 
+keygen() is a synonym for Crypt::RSA::Key::generate(). See
+Crypt::RSA::Key(3) manpage for usage details.
+
 =head2 B<encrypt()>
+
+encrypt() performs RSA encryption on a string of arbitrary length with a
+public key using the encryption scheme bound to the object at creation.
+The default scheme is OAEP, implemented in Crypt::RSA::EME::OAEP(3).
+encrypt() returns cyphertext (a string) on success and a non-true value on
+failure. It takes a hash as argument with following keys:
+
+=over 4
+
+=item B<Message>
+
+An arbitrary length string to be encrypted.
+
+=item B<Key>
+
+Public key of the recipient, a Crypt::RSA::Key::Public object.
+
+=item B<Armour>
+
+An optional boolean parameter that causes encrypt() to encode the
+cyphertext as a 6-bit clean ASCII message.
+
+=back
 
 =head2 B<decrypt()>
 
+decrypt() performs RSA decryption with a private key using the encryption
+scheme bound to the object at creation. The default scheme is OAEP,
+implemented in Crypt::RSA::EME::OAEP(3). decrypt() returns plaintext on
+success and a non-true value on failure. It takes a hash as argument with
+following keys:
+
+=over 4
+
+=item B<Cyphertext>
+
+Encrypted text or arbitrary length. 
+
+=item B<Key>
+
+Private key, a Crypt::RSA::Key::Private object.
+
+=item B<Armour> 
+
+Boolean parameter that specifies whether the Cyphertext is encoded in
+6-bit ASCII.
+
+=back
+
 =head2 B<sign()>
+
+sign() creates an RSA signature on a string with a private key using the
+signature scheme bound to the object at creation. The default scheme is
+PSS, implemented in Crypt::RSA::SSA::PSS(3). sign() returns a signature on
+success and a non-true value on failure. It takes a hash as argument
+with following keys:
+
+=over 4
+
+=item B<Message>
+
+A string to be signed. 
+
+=item B<Key>
+
+Private key of the sender, a Crypt::RSA::Key::Private object.
+
+=item B<Armour>
+
+An optional boolean parameter that causes sign() to encode the
+signature as a 6-bit clean ASCII message.
+
+=back
 
 =head2 B<verify()>
 
+verify() verifies an RSA signature with a public key using the signature
+scheme bound to the object at creation. The default scheme is
+PSS, implemented in Crypt::RSA::SSA::PSS(3). verify() returns a true 
+value on success and a non-true value on failure. It takes a hash as argument
+with following keys:
+
+=over 4 
+
+=item B<Message>
+
+The original signed message, a string of arbitrary length.
+
+=item B<Key>
+
+Public key of the signer, a Crypt::RSA::Key::Public object.
+
+=item B<Sign> 
+
+Signature computed with sign(), a string.
+
+=item B<Armour>
+
+Boolean parameter that specifies whether the Signature is encoded in
+6-bit ASCII.
+
+=back
+
 =head1 MODULES
 
-As of this writing, Crypt::RSA is just a placeholder for the wrapper
-code, which will appear soon. In the meantime, please use the following
-modules directly:
+Apart from Crypt::RSA, the following modules are intended for application
+developer and end-user consumption:
 
 =over 4
 
@@ -210,7 +383,7 @@ Plaintext-aware encryption with RSA.
 
 =item B<Crypt::RSA::SSA::PSS>
 
-Probablistic Signature Scheme based on RSA.
+Probabilistic Signature Scheme based on RSA.
 
 =back
 
@@ -229,13 +402,13 @@ Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Ilya Zakharevich for answering even the goofiest of my questions
-regarding Math::Pari with unwavering paitence. Shizukesa on #perl for
+regarding Math::Pari with unwavering patience. Shizukesa on #perl for
 clueing me into the error handling method used in this module and a-mused
 for good advice.
 
 =head1 LICENSE 
 
-Copyright (c) 1998-2001, Vipul Ved Prakash. All rights reserved. This code
+Copyright (c) 2000-2001, Vipul Ved Prakash. All rights reserved. This code
 is free software; you can redistribute it and/or modify it under the same
 terms as Perl itself.
 
@@ -243,8 +416,8 @@ terms as Perl itself.
 
 Crypt::RSA::Primitives(3), Crypt::RSA::DataFormat(3),
 Crypt::RSA::Errorhandler(3), Crypt::RSA::Debug(3), Crypt::Primes(3),
-Crypt::Random(3), Crypt::CBC(3), Crypt::Blowfish(3), Tie::EncryptedHash(3),
-Math::Pari(3).
+Crypt::Random(3), Crypt::CBC(3), Crypt::Blowfish(3),
+Tie::EncryptedHash(3), Convert::ASCII::Armour(3), Math::Pari(3).
 
 =head1 MAILING LIST
 
@@ -288,5 +461,4 @@ pac is at http://lists.vipul.net/mailman/listinfo/pac/
 =item 14 B<E. Young, T. Hudson, OpenSSL Team.> OpenSSL 0.9.5a source code (2000).
 
 =cut
-
 

@@ -1,29 +1,47 @@
 
-                        Changelog for Crypt::RSA
-           $Id: Changes,v 1.1 2001/03/12 16:17:30 vipul Exp $
+                        CHANGELOG for Crypt::RSA
+           $Id: Changes,v 1.5 2001/03/26 08:04:19 vipul Exp $
 
 --------------------------------------------------------------------------
 
+1.30                                                        March 25, 2001 
+
+ * Documented Crypt::RSA methods
+
+ * Added ASCII armour support to Crypt::RSA::encrypt(), decrypt(), 
+   sign() and verify() using Convert::ASCII::Armour
+
+ * Crypt::RSA will now work with any encryption/signing scheme as 
+   long as they provide the same method interface as Crypt::RSA::EME::OAEP
+   and Crypt::RSA::SSA::PSS
+
+ * Wrote Crypt::RSA::EME::OAEP::version() and 
+   Crypt::RSA::SSA::PSS::version(). The next release will include 
+   support for version specific operation in EME::* and PSS::*
+
+ * Added and corrected documentation for Crypt::RSA::EME::OAEP and
+   Crypt::RSA::SSA::PSS
+
+
 1.25                                                        March 12, 2001
 
- 1 Wrote Crypt::RSA::sign() and Crypt::RSA::verify()
+ * Wrote Crypt::RSA::sign() and Crypt::RSA::verify()
 
- 2 Added tests for sign and verify to t/11-wrapper.t
+ * Added tests for sign and verify to t/11-wrapper.t
 
- 3 Bugfix in Crypt::RSA::EME::OAEP::hash() and mgf()
+ * Bugfix in Crypt::RSA::EME::OAEP::hash() and mgf()
      $self was being fed to the digest
 
- 4 Bugfix in Crypt::RSA::SSA::PSS::hash() and mgf()
-     same error as 3
+ * Bugfix in Crypt::RSA::SSA::PSS::hash() and mgf()
  
 
 1.24                                                        March 11, 2001
 
- 1 Bug fix in Crypt::RSA::EME::OAEP::decode()
+ * Bug fix in Crypt::RSA::EME::OAEP::decode()
     newline in plaintext was causing decode() to return error
 
- 2 Wrote Crypt::RSA::encrypt() and Crypt:RSA::decrypt()
+ * Wrote Crypt::RSA::encrypt() and Crypt:RSA::decrypt()
 
- 3 Wrote a test for Crypt::RSA (t/11-wrapper.t)
+ * Wrote a test for Crypt::RSA (t/11-wrapper.t)
 
 

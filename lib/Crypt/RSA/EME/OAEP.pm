@@ -6,12 +6,12 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: OAEP.pm,v 1.11 2001/03/12 16:17:33 vipul Exp $
+## $Id: OAEP.pm,v 1.14 2001/03/26 07:43:00 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::EME::OAEP; 
 use strict;
-use vars qw(@ISA);
+use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor generate_random_octet mgf1);
 use Crypt::RSA::Primitives;
@@ -19,14 +19,14 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 use Carp;
-# use Data::Dumper;
 @ISA = qw(Crypt::RSA::Errorhandler);
-
+($VERSION)  = '$Revision: 1.14 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     return bless { primitives => new Crypt::RSA::Primitives, 
-                   P => "Crypt::RSA",
-                   hlen => 20,
+                   P          => "Crypt::RSA",
+                   hlen       => 20,
+                   VERSION    => $VERSION,
                  }, shift 
 }
 
@@ -145,6 +145,12 @@ sub mgf {
 }
 
 
+sub version {
+    my $self = shift;
+    return $self->{VERSION};
+}
+
+
 1;
 
 =head1 NAME
@@ -155,27 +161,32 @@ Crypt::RSA::EME::OAEP - Plaintext-aware encryption with RSA.
 
     my $oaep = new Crypt::RSA::EME::OAEP; 
 
-    my $ct = $oaep->encrypt (Key => $key, Message => $message) || 
+    my $ct = $oaep->encrypt( Key => $key, Message => $message ) || 
                 die $oaep->errstr; 
 
-    my $pt = $oaep->decrypt (Key => $key, Cyphertext => $ct)   || 
+    my $pt = $oaep->decrypt( Key => $key, Cyphertext => $ct )   || 
                 die $oaep->errstr; 
 
 =head1 DESCRIPTION
 
-This module implements "plaintext-aware encryption" with RSA.
-Plaintext-aware means it's computationally infeasible to obtain full or
-partial information about a message from a cyphertext, and computationally
-infeasible to generate a valid cyphertext without knowing the
-corresponding message. It's impossible to mount chosen cyphertext attacks
-against this scheme. For more information on plaintext-aware encryption,
-see [3], [9] & [13].
+This module implements Optimal Asymmetric Encryption, a plaintext-aware
+encryption scheme based on RSA. The notion of plaintext-aware implies it's
+computationally infeasible to obtain full or partial information about a
+message from a cyphertext, and computationally infeasible to generate a
+valid cyphertext without knowing the corresponding message.
+Plaintext-aware schemes, such as OAEP, are semantically secure,
+non-malleable and secure against chosen-ciphertext attack. For more
+information on OAEP and plaintext-aware encryption, see [3], [9] & [13].
 
 =head1 METHODS
 
 =head2 B<new()>
 
 Constructor. 
+
+=head2 B<version()>
+
+Returns the version number of the module.
 
 =head2 B<encrypt()>
 
@@ -194,7 +205,7 @@ too long."
 
 =item B<Key>
 
-Public key of the recepient, a Crypt::RSA::Key::Public object.
+Public key of the recipient, a Crypt::RSA::Key::Public object.
 
 =back
 
@@ -214,7 +225,14 @@ octets, where k is the length of the RSA modulus.
 
 =item B<Key>
 
-Private key of the reciever, a Crypt::RSA::Key::Private object.
+Private key of the receiver, a Crypt::RSA::Key::Private object.
+
+=item B<Version>
+
+Version of the module that was used for creating the Cyphertext. This is
+an optional argument. When present, decrypt() will ensure before
+proceeding that the installed version of the module can successfully
+decrypt the Cyphertext.
 
 =head1 ERROR HANDLING
 

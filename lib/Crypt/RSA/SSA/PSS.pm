@@ -6,12 +6,12 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PSS.pm,v 1.11 2001/03/12 16:17:34 vipul Exp $
+## $Id: PSS.pm,v 1.14 2001/03/26 07:43:01 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 package Crypt::RSA::SSA::PSS;
 use strict;
-use vars qw(@ISA);
+use vars qw(@ISA $VERSION);
 use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor generate_random_octet mgf1);
 use Crypt::RSA::Primitives;
@@ -19,11 +19,13 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 @ISA = qw(Crypt::RSA::Errorhandler);
+($VERSION)  = '$Revision: 1.14 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 sub new { 
     return bless { primitives => new Crypt::RSA::Primitives, 
                    hlen       => 20,
+                   VERSION    => $VERSION,
                  }, shift 
 }
 
@@ -124,11 +126,17 @@ sub mgf {
     return mgf1 (@data);
 }
 
+sub version { 
+    my $self = shift;
+    return $self->{VERSION};
+}
+
+
 1;
 
 =head1 NAME
 
-Crypt::RSA::SSA::PSS - Probablistic Signature Scheme based on RSA. 
+Crypt::RSA::SSA::PSS - Probabilistic Signature Scheme based on RSA. 
 
 =head1 SYNOPSIS
 
@@ -151,8 +159,8 @@ Crypt::RSA::SSA::PSS - Probablistic Signature Scheme based on RSA.
 PSS (Probabilistic Signature Scheme) is a provably secure method of
 creating digital signatures with RSA. "Provable" means that the
 difficulty of forging signatures can be directly related to inverting
-the RSA function. "Probablistic" alludes to the randomly generated salt
-value included in the signature to enchance security. For more details
+the RSA function. "Probabilistic" alludes to the randomly generated salt
+value included in the signature to enhance security. For more details
 on PSS, see [4] & [13].
 
 =head1 METHODS
@@ -160,6 +168,10 @@ on PSS, see [4] & [13].
 =head2 B<new()>
 
 Constructor. 
+
+=head2 B<version()>
+
+Returns the version number of the module. 
 
 =head2 B<sign()>
 
@@ -173,7 +185,7 @@ with the following mandatory keys:
 
 =item B<Message> 
 
-Message to be signed, a string of arbitary length.  
+Message to be signed, a string of arbitrary length.  
 
 =item B<Key> 
 
@@ -183,7 +195,7 @@ Private key of the signer, a Crypt::RSA::Key::Private object.
 
 =head2 B<verify()>
 
-Verfies a signature generated with sign(). The salt is recovered from the
+Verifies a signature generated with sign(). The salt is recovered from the
 signature and need not be passed. Returns a true value on success and
 false on failure. $self->errstr is set to "Invalid signature." or
 appropriate error on failure. verify() takes a hash argument with the
@@ -197,11 +209,19 @@ Public key of the signer, a Crypt::RSA::Key::Public object.
 
 =item B<Message>
 
-The original signed message, a string of arbitary length. 
+The original signed message, a string of arbitrary length. 
 
 =item B<Signature>
 
 Signature computed with sign(), a string. 
+
+=item B<Version>
+
+Version of the module that was used for creating the Signature. This is an
+optional argument. When present, verify() will ensure before proceeding
+that the installed version of the module can successfully verify the
+Signature.
+
 
 =head2 B<verify_with_salt()>
 

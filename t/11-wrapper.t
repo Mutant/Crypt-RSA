@@ -81,8 +81,11 @@ for my $keysize (qw(512 1024)) {
 
     my $signature = $rsa->sign ( 
                         Message => $plaintext, 
-                        Key => $pri
+                        Key => $pri,
+                        Armour => 1,
                     ) || die $rsa->errstr();
+
+    print "$signature\n";
 
     print $signature ? "ok" : "not ok"; print " ", ++$i, "\n";
 
@@ -90,6 +93,7 @@ for my $keysize (qw(512 1024)) {
                     Message => $plaintext, 
                     Key => $pub, 
                     Signature => $signature,
+                    Armour => 1,
                  );
 
     print $verify ? "ok" : "not ok"; print " ", ++$i, "\n";
