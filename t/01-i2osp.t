@@ -1,6 +1,6 @@
 #!/usr/bin/perl -sw
 ##
-## 
+## 01-i2osp.t -- Test for ::DataFormat::i2osp() 
 ##
 ## Copyright (c) 2000, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify

@@ -1,13 +1,27 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.10 2001/04/05 11:26:56 vipul Exp $
+           $Id: Changes,v 1.11 2001/04/06 18:34:35 vipul Exp $
 
 --------------------------------------------------------------------------
 
+1.33                                                        April 6, 2001
+
+ * Wrote ::SS:PKCS1v15 (that implements PKCS #1 v1.5 signatures) and a test
+   for it (t/14-es-pkcs1v15.t)
+
+ * Renamed ::ES::PKCS1_v1_5 to ::ES::PKCS1v15. The underscores were
+   driving me nuts
+
+ * Wrote ::DataFormat::h2osp() - Hex to Octet String Primitive, that
+   converts hex strings/numbers of arbitrary length into octet strings
+
+ * Couple of small changes to ::Debug::debug()
+
+
 1.32                                                        April 5, 2001
 
- * Wrote ::ES::PKCS_v_15 that implements PKCS1 v1.5 padded encryption,
-   and a test for it (t/13-es-pkcs_v15.t).
+ * Wrote ::ES::PKCS1_v1_5 that implements PKCS #1 v1.5 padded encryption,
+   and a test for it (t/13-es-pkcs1v15.t)
 
 
 1.31                                                        April 3, 2001

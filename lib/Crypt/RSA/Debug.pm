@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Debug.pm,v 1.7 2001/04/05 11:26:58 vipul Exp $
+## $Id: Debug.pm,v 1.8 2001/04/06 18:34:40 vipul Exp $
 
 package Crypt::RSA::Debug; 
 use lib "/home/vipul/PERL/crypto/rsa/lib";
@@ -27,8 +27,12 @@ sub debug{
     $sub .= " |  " . (shift);  
     $sub =~ s/\x00/[0]/g; 
     $sub =~ s/\x01/[1]/g; 
+    $sub =~ s/\x02/[2]/g; 
+    $sub =~ s/\x04/[4]/g; 
+    $sub =~ s/\x05/[5]/g; 
+    $sub =~ s/\xff/[-]/g; 
     $sub =~ s/[\x00-\x1f]/\./g; 
-    $sub =~ s/[\x7f-\xff]/_/g;
+    $sub =~ s/[\x7f-\xfe]/_/g;
     print "$sub\n";
 }
 

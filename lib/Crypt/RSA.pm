@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: RSA.pm,v 1.32 2001/04/05 11:26:57 vipul Exp $
+## $Id: RSA.pm,v 1.33 2001/04/06 18:34:38 vipul Exp $
 
 package Crypt::RSA;
 use lib '/home/vipul/PERL/crypto/rsa/lib';
@@ -25,7 +25,7 @@ use Carp;
 use Data::Dumper;
 
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.32 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.33 $' =~ /\s(\d+\.\d+)\s/; 
 
 my %DEFAULTS = ( 
     'ES'    => { Scheme  => "Crypt::RSA::ES::OAEP",
@@ -183,8 +183,8 @@ Crypt::RSA - RSA public-key cryptosystem.
 
 =head1 VERSION
 
- $Revision: 1.32 $ (Beta)
- $Date: 2001/04/05 11:26:57 $
+ $Revision: 1.33 $ (Beta)
+ $Date: 2001/04/06 18:34:38 $
 
 =head1 SYNOPSIS
 
@@ -384,6 +384,14 @@ Plaintext-aware encryption with RSA.
 =item B<Crypt::RSA::SS::PSS>
 
 Probabilistic Signature Scheme based on RSA.
+
+=item B<Crypt::RSA::ES::PKCS1v15>
+
+PKCS #1 v1.5 encryption scheme. 
+
+=item B<Crypt::RSA::SS::PKCS1v15>
+
+PKCS #1 v1.5 signature scheme. 
 
 =back
 

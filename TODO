@@ -1,7 +1,7 @@
 
 
                            TODO for Crypt::RSA
-            $Id: TODO,v 1.20 2001/04/05 11:26:56 vipul Exp $
+            $Id: TODO,v 1.21 2001/04/06 18:34:35 vipul Exp $
 
 -------------------------------------------------------------------------------
 P No Task                                              Status
@@ -99,7 +99,8 @@ P No Task                                              Status
      exponent or the decryption exponent depending
      on the type of key passed.  Also implement 
      decryption with CRT here.
-* 32 Write Crypt::RSA::EME|SSA::RSAREF2 
+  32 Write Crypt::RSA::EME|SSA::RSAREF2               April 06 2001  1930
+     (as ::ES/SS::PKCS1v15)
 * 33 Write Crypt::RSA::EME|SSA::Textbook
 * 34 Write a note in documentation on insecurity of
      Textbook RSA.  Also explain the concept of 

@@ -6,17 +6,16 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: 07-pss.t,v 1.3 2001/04/06 18:33:31 vipul Exp $ 
+## $Id: 14-ss-pkcs1v15.t,v 1.1 2001/04/06 18:33:31 vipul Exp $ 
 
 use lib '../lib';
 use lib 'lib';
 use Crypt::RSA::Key;
-use Crypt::RSA::SS::PSS;
+use Crypt::RSA::SS::PKCS1v15;
 use Math::Pari qw(PARI);
 
-print "1..4\n";
+print "1..3\n";
 my $i = 0;
-my $pss = new Crypt::RSA::SS::PSS; 
 
 my $message =  " Whither should I fly? \
                  I have done no harm. But I remember now \
@@ -33,20 +32,20 @@ my ($pub, $priv) = $keychain->generate (
                      Verbosity => 1
                     ); 
 
-for (1 .. 4) { 
-
-    $message .= "\n$message";
-
-    my $sig = $pss->sign (
+for (qw(MD2 MD5 SHA1)) { 
+   
+    my $pkcs = new Crypt::RSA::SS::PKCS1v15 ( Digest => $_ );
+ 
+    my $sig = $pkcs->sign (
                 Message => $message,
                 Key     => $priv,
-    ) || die $pss->errstr();
+    ) || die $pkcs->errstr();
 
-    my $verify = $pss->verify (
+    my $verify = $pkcs->verify (
                    Key => $pub, 
                    Message => $message, 
                    Signature => $sig, 
-    ) || die $pss->errstr;
+    ) || die $pkcs->errstr;
 
     print $verify ? "ok" : "not ok"; print " ", ++$i, "\n";
 

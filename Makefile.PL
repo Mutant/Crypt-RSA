@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: Makefile.PL,v 1.4 2001/03/31 02:45:20 vipul Exp $
+## $Id: Makefile.PL,v 1.5 2001/04/06 18:34:35 vipul Exp $
 
 use ExtUtils::MakeMaker;
 WriteMakefile(
@@ -17,12 +17,15 @@ WriteMakefile(
                         'Math::Pari'             => '2.001804', 
                         'Crypt::Random'          => '0.33', 
                         'Crypt::Primes'          => '0.38',
-                        'Crypt::CBC'             => 0, 
-                        'Crypt::Blowfish'        => 0,
-                        'Data::Dumper'           => 0,
-                        'Tie::EncryptedHash'     => 0,
-                        'Convert::ASCII::Armour' => 0,
-                        'Sort::Versions'         => 0,
+                        'Crypt::CBC'             =>  0, 
+                        'Crypt::Blowfish'        =>  0,
+                        'Data::Dumper'           =>  0,
+                        'Tie::EncryptedHash'     =>  0,
+                        'Convert::ASCII::Armour' =>  0,
+                        'Sort::Versions'         =>  0,
+                        'Digest::SHA1'           =>  0,
+                        'Digest::MD5'            =>  0,
+                        'Digest::MD2'            =>  0,
                       } 
 );
 

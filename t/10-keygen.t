@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id$
+## $Id: 10-keygen.t,v 1.1 2001/04/06 18:33:31 vipul Exp $
 
 use lib '../lib';
 use lib 'lib';

@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: 05-primitives.t,v 1.1 2001/02/22 15:50:54 vipul Exp $
+## $Id: 05-primitives.t,v 1.2 2001/04/06 18:33:31 vipul Exp $
 
 use lib 'lib';
 use lib '../lib';

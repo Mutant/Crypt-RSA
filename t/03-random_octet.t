@@ -6,7 +6,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: 03-make_random_octet.t,v 1.1 2001/02/19 20:22:21 vipul Exp $
+## $Id: 03-random_octet.t,v 1.1 2001/04/06 18:33:31 vipul Exp $
 
 use lib '../lib';
 use Crypt::RSA; 

@@ -1,14 +1,14 @@
 #!/usr/bin/perl -sw
 ##
-## Crypt::RSA::ES::PKCS1_v1_5
+## Crypt::RSA::ES::PKCS1v15
 ##
 ## Copyright (c) 2001, Vipul Ved Prakash.  All rights reserved.
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: PKCS1_v1_5.pm,v 1.3 2001/04/05 11:26:59 vipul Exp $
+## $Id: PKCS1v15.pm,v 1.2 2001/04/06 18:34:42 vipul Exp $
 
-package Crypt::RSA::ES::PKCS1_v1_5;
+package Crypt::RSA::ES::PKCS1v15;
 use lib "/home/vipul/PERL/crypto/rsa/lib";
 use strict;
 use vars qw(@ISA $VERSION);
@@ -20,7 +20,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 @ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.3 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION)  = '$Revision: 1.2 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
@@ -102,7 +102,7 @@ sub version {
 
 =head1 NAME
 
-Crypt::RSA::ES::PKCS_v1_5 - PKCS1 v1.5 padded encryption with RSA. 
+Crypt::RSA::ES::PKCS1_v1_5 - PKCS #1 v1.5 padded encryption scheme based on RSA.
 
 =head1 SYNOPSIS
 
@@ -116,7 +116,8 @@ Crypt::RSA::ES::PKCS_v1_5 - PKCS1 v1.5 padded encryption with RSA.
 
 =head1 DESCRIPTION
 
-This module implements PKCS v1.5 padded encryption scheme based on RSA.
+This module implements PKCS #1 v1.5 padded encryption scheme based on RSA.
+See [13] for details on the encryption scheme.
 
 =head1 METHODS
 

@@ -7,7 +7,7 @@
 ## This code is free software; you can redistribute it and/or modify
 ## it under the same terms as Perl itself.
 ##
-## $Id: DataFormat.pm,v 1.9 2001/03/12 16:17:32 vipul Exp $
+## $Id: DataFormat.pm,v 1.10 2001/04/06 18:34:40 vipul Exp $
 
 use lib "/home/vipul/PERL/crypto/primes/lib";
 package Crypt::RSA::DataFormat; 
@@ -19,7 +19,8 @@ use Carp;
 require Exporter;
 @ISA = qw(Exporter);
 
-@EXPORT_OK = qw(i2osp os2ip octet_xor generate_random_octet bitsize mgf1 steak);
+@EXPORT_OK = qw(i2osp os2ip h2osp octet_xor bitsize 
+                generate_random_octet mgf1 steak);
 
 
 sub i2osp {
@@ -57,6 +58,14 @@ sub os2ip {
         $result += PARI($a) * $b;
     }
     return $result;
+}
+
+
+sub h2osp { 
+    my $hex = shift;
+    $hex =~ s/[ \n]//ig;
+    my $num = Math::Pari::_hex_cvt($hex);
+    return i2osp ($num);
 }
 
 
