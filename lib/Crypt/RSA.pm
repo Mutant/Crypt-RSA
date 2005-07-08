@@ -21,7 +21,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.55 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.56 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -544,9 +544,17 @@ for good advice.
 
 =head1 LICENSE 
 
-Copyright (c) 2000-2001, Vipul Ved Prakash. All rights reserved. This code
-is free software; you can redistribute it and/or modify it under the same
-terms as Perl itself.
+Copyright (c) 2000-2005, Vipul Ved Prakash. All rights reserved.
+This code is free software; it is distributed under a
+disjunctive Artistic/GPL license, like Perl itself.
+
+I have received requests for commercial licenses of
+Crypt::RSA, from those who desire contractual support and
+indemnification. I'd be happy to provide a commercial license
+if you need one. Please send me mail at C<mail@vipul.net> with
+the subject "Crypt::RSA license". Please don't send me mail
+asking if you need a commercial license. You don't, if
+Artistic of GPL suit you fine.
 
 =head1 SEE ALSO
 
@@ -559,12 +567,10 @@ crypt-rsa-interoperability-table(3).
 
 =head1 MAILING LIST
 
-pac@lists.vipul.net is a mailing list for discussing the usage &
-development of asymmetric cryptography modules in perl. Please post
-Crypt::RSA related communications directly to the list address. Before you
-post though, take a moment to grep through the list archives at
-<URL:http://lists.vipul.net/mailman/listinfo/pac/> to see if your question
-has already been answered there.
+There used to be a mailing list for discussing Crypt::RSA and
+other asymmetric cryptography module during the early phases of
+development. The list is now gone. All Crypt::RSA related
+communications should come directly to me.
 
 =head1 BIBLIOGRAPHY
 

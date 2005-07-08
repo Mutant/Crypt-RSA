@@ -4,6 +4,11 @@
 
 --------------------------------------------------------------------------
 
+1.56                                                         July 05, 2005
+
+ * Removed references to the mailing list and added support for
+   an optional commercial license.
+
 1.55                                                     February 18, 2005
 
  * Fixed a bug ::DataFormat::i2osp(), wherein there was an encoding problem 
