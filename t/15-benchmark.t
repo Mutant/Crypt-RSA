@@ -54,8 +54,7 @@ local $sigcrtpkcs = $pkcs->sign (
         );
 
 
-my ($message, $pkcs, $pss, $pub, $pub2, $priv, $priv2, $sig, $sigcrt, 
- $sigcrtpkcs, $keychain, $sigpkcs);
+my ($message, $pkcs, $pss, $pub, $pub2, $priv, $priv2, $sig, $keychain, $sigpkcs);
  
 timethese ($count, {
 

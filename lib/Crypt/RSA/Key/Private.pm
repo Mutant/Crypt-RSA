@@ -291,8 +291,8 @@ include DES, IDEA, Twofish and other ciphers supported by Crypt::CBC.
 
 =item B<reveal()>
 
-If the key is not decrypted at C<new()>, it can be decrypted by calling
-C<reveal()> with a C<Password> argument.
+If the key is not decrypted at C<new()>, it can be decrypted by
+calling C<reveal()> with a C<Password> argument.
 
 =item B<hide()>
 
@@ -302,9 +302,30 @@ and password.
 =item B<write()>
 
 Causes the key to be written to a disk file specified by the
-C<Filename> argument. C<write()> will call C<hide()> before writing the
-key to disk. If you wish to store the key in plain, don't specify a
-password at C<new()>.
+C<Filename> argument. C<write()> will call C<hide()> before
+writing the key to disk. If you wish to store the key in plain,
+don't specify a password at C<new()>.
+
+=item B<read()>
+
+Causes the key to be read from a disk file specified by
+C<Filename> into the object. If C<Password> is provided, the
+method automatically calls reveal() to decrypt the key.
+
+=item B<serialize()>
+
+Creates a Data::Dumper(3) serialization of the private key and
+returns the string representation.
+
+=item B<deserialize()>
+
+Accepts a serialized key under the C<String> parameter and
+coverts it into the perl representation stored in the object.
+
+=item C<check()>
+
+Check the consistency of the key. If the key checks out, it sets
+$self->{Checked} = 1. Returns undef on failure.
 
 =back
 

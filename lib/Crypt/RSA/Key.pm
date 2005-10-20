@@ -211,6 +211,8 @@ with Crypt::RSA::Key::Private(3).
 
 Public Key Format. This option is like SKF but for the public key.
 
+=back
+
 =head1 ERROR HANDLING
 
 See B<ERROR HANDLING> in Crypt::RSA(3) manpage.

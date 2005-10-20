@@ -221,6 +221,8 @@ The original signed message, a string of arbitrary length.
 
 Signature computed with sign(), a string. 
 
+=back
+
 =head1 ERROR HANDLING
 
 See ERROR HANDLING in Crypt::RSA(3) manpage.
@@ -228,8 +230,6 @@ See ERROR HANDLING in Crypt::RSA(3) manpage.
 =head1 BIBLIOGRAPHY
 
 See BIBLIOGRAPHY in Crypt::RSA(3) manpage.
-
-=over
 
 =head1 AUTHOR
 

@@ -66,6 +66,13 @@ The module provides support for the I<print> method of debugging!
 
 Prints B<String> on STDOUT, along with caller's function name and line number.
 
+=item B<debuglevel> Integer
+
+Sets the class data I<debuglevel> to specified value. The value
+defaults to 0. Callers can use the debuglevel facility by
+comparing $Crypt::RSA::DEBUG to the desired debug level before
+generating a debug statement.
+
 =back
 
 =head1 AUTHOR

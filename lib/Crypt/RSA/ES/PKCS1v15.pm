@@ -191,6 +191,8 @@ octets, where k is the length of the RSA modulus.
 
 Private key of the receiver, a Crypt::RSA::Key::Private object.
 
+=back
+
 =head1 ERROR HANDLING
 
 See ERROR HANDLING in Crypt::RSA(3) manpage.

@@ -101,16 +101,24 @@ first error.
 
 =over 4
 
+=item B<new()>
+
+Barebones constructor.
+
 =item B<error($mesage, ($wipeme, $wipemetoo))>
 
-The first argument to error() is $message which is placed in
-$self->{errstr} and the remaining arguments are interpretted as variables
-containing sensitive data that are wiped out from the memory. error()
-always returns undef.
+The first argument to error() is $message which is placed in $self-
+>{errstr} and the remaining arguments are interpretted as
+variables containing sensitive data that are wiped out from the
+memory. error() always returns undef.
 
 =item B<errstr()> 
 
 errstr() is an accessor method for $self->{errstr}.
+
+=item B<errstrrst()>
+
+This method sets $self->{errstr} to an empty string.
 
 =back
 

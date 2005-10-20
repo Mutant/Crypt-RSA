@@ -142,14 +142,34 @@ Crypt::RSA public keys. Following methods are available:
 
 =item B<new()>
 
-The constructor. Reads the public key from a disk file when called with a
-C<Filename> argument.
+The constructor. Reads the public key from a disk file when
+called with a C<Filename> argument.
 
 =item B<write()>
 
-Writes a public key to disk when called with a C<Filename> argument.
+Causes the key to be written to a disk file specified by the
+C<Filename> argument.
 
-=over
+=item B<read()>
+
+Causes the key to be read from a disk file specified by
+C<Filename> into the object.
+
+=item B<serialize()>
+
+Creates a Data::Dumper(3) serialization of the private key and
+returns the string representation.
+
+=item B<deserialize()>
+
+Accepts a serialized key under the C<String> parameter and
+coverts it into the perl representation stored in the object.
+
+=item C<check()>
+
+Check the consistency of the key. Returns undef on failure.
+
+=back
 
 =head1 AUTHOR
 

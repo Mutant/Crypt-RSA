@@ -158,5 +158,23 @@ sub serialize {
 
 sub hide {} 
 
+=head1 NAME
+
+Crypt::RSA::Key::Private::SSH - SSH Private Key Import
+
+=head1 SYNOPSIS
+
+    Crypt::RSA::Key::Private::SSH is a class derived from
+    Crypt::RSA::Key::Private that provides serialize() and
+    deserialze() methods for SSH 2.x keys.
+
+=head1 AUTHOR
+
+Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
+
+=cut
+
+
+
 
 1;

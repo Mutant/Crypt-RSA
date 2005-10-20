@@ -241,6 +241,7 @@ optional argument. When present, verify() will ensure before proceeding
 that the installed version of the module can successfully verify the
 Signature.
 
+=back
 
 =head2 B<verify_with_salt()>
 
@@ -255,8 +256,6 @@ See ERROR HANDLING in Crypt::RSA(3) manpage.
 =head1 BIBLIOGRAPHY
 
 See BIBLIOGRAPHY in Crypt::RSA(3) manpage.
-
-=over
 
 =head1 AUTHOR
 

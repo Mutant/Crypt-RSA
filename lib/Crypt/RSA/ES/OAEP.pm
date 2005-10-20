@@ -265,6 +265,8 @@ an optional argument. When present, decrypt() will ensure before
 proceeding that the installed version of the module can successfully
 decrypt the Cyphertext.
 
+=back
+
 =head1 ERROR HANDLING
 
 See ERROR HANDLING in Crypt::RSA(3) manpage.

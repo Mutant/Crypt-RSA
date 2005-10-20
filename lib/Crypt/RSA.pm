@@ -21,7 +21,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.56 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.57 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 

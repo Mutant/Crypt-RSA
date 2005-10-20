@@ -4,6 +4,11 @@
 
 --------------------------------------------------------------------------
 
+1.57                                                          Oct 20, 2005
+
+ * Updated POD documentation and added POD syntax and coverage
+   tests using Test::Pod and Pod::Coverage.
+
 1.56                                                         July 05, 2005
 
  * Removed references to the mailing list and added support for

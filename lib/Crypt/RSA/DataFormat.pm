@@ -142,14 +142,23 @@ available as exportable functions.
 
 =item B<i2osp> Integer, Length
 
-Integer To Octet String Primitive. Converts an integer into its equivalent
-octet string representative of length B<Length>. If necessary, the
-resulting string is prefixed with nulls.
+Integer To Octet String Primitive. Converts an integer into its
+equivalent octet string representation of length B<Length>. If
+necessary, the resulting string is prefixed with nulls. If
+B<Length> is not provided, returns an octet string of shortest
+possible length.
+
+=item B<h2osp> Hex String
+
+Hex To Octet String Primitive. Converts a I<hex string> into its
+equivalent octet string representation and returns an octet
+string of shortest possible length. The hex string is not
+prefixed with C<0x>, etc.
 
 =item B<os2ip> String
 
 Octet String to Integer Primitive. Converts an octet string into its
-equivalent integer representative.
+equivalent integer representation.
 
 =item B<generate_random_octet> Length, Strength
 

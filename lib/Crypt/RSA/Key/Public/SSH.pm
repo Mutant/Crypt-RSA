@@ -34,3 +34,20 @@ sub serialize {
 
 1;
 
+=head1 NAME
+
+Crypt::RSA::Key::Public::SSH - SSH Public Key Import
+
+=head1 SYNOPSIS
+
+    Crypt::RSA::Key::Public::SSH is a class derived from
+    Crypt::RSA::Key::Public that provides serialize() and
+    deserialze() methods for SSH 2.x keys.
+
+=head1 AUTHOR
+
+Vipul Ved Prakash, E<lt>mail@vipul.netE<gt>
+
+=cut
+
+
