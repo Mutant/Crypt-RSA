@@ -1,8 +1,19 @@
 
                         CHANGELOG for Crypt::RSA
-           $Id: Changes,v 1.29 2001/09/25 14:11:21 vipul Exp $
 
 --------------------------------------------------------------------------
+
+1.58                                                          Dec 21, 2006
+
+ * We turn on binmode() on filehandles when reading and writing
+   keys from disk, so allow safe exchange of SSH private keys
+   from Windows and *nix systems. Thanks to Ulisses Gomes
+   <ulisses@ibiz.com.br> for pointing this out.
+
+ * Include a copy of the GPL in the distribution. This addresses
+   bug #18771. (http://rt.cpan.org/Public/Bug/Display.html?id=18771)
+
+ * Removed warnings from t/15-benchmark.t
 
 1.57                                                          Oct 20, 2005
 

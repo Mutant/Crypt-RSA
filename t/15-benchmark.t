@@ -19,6 +19,7 @@ use Crypt::RSA::DataFormat qw(os2ip i2osp);
 use Math::Pari qw(PARI);
 use Benchmark;
 use Data::Dumper;
+no warnings;
 
 print "1..1\n";
 my $i = 0;

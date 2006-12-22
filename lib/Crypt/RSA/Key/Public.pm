@@ -81,6 +81,7 @@ sub write {
     my $string = $self->serialize (%params); 
     open DISK, ">$params{Filename}" || 
         croak "Can't open $params{Filename} for writing.";
+    binmode DISK;
     print DISK $string;
     close DISK;
 
@@ -91,6 +92,7 @@ sub read {
     my ($self, %params) = @_;
     open DISK, $params{Filename} or
         croak "Can't open $params{Filename} to read.";
+    binmode DISK;
     my @key = <DISK>; 
     close DISK;
     $self = $self->deserialize (String => \@key);

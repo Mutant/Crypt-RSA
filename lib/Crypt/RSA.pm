@@ -21,7 +21,7 @@ use Convert::ASCII::Armour;
 use Carp;
 
 @ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.57 $' =~ /\s(\d+\.\d+)\s/; 
+($VERSION) = '$Revision: 1.58 $' =~ /\s(\d+\.\d+)\s/; 
 
 
 my %DEFAULTS = ( 
@@ -565,12 +565,23 @@ Tie::EncryptedHash(3), Convert::ASCII::Armour(3), Math::Pari(3),
 Class::Loader(3), crypt-rsa-interoperability(3),
 crypt-rsa-interoperability-table(3).
 
-=head1 MAILING LIST
+=head1 REPORTING BUGS
 
-There used to be a mailing list for discussing Crypt::RSA and
-other asymmetric cryptography module during the early phases of
-development. The list is now gone. All Crypt::RSA related
-communications should come directly to me.
+All bug reports related to Crypt::RSA should go to rt.cpan.org 
+at C<http://rt.cpan.org/Dist/Display.html?Queue=Crypt-RSA>
+
+Crypt::RSA is considered to be stable. If you are running into a
+problem, it's likely of your own making. Please check your code
+and consult the documentation before posting a bug report. A
+google search with the error message might also shed light if it
+is a common mistake that you've made.
+
+If the module installation fails with a "Segmentation Fault" or
+"Bus Error", it is likely a Math::Pari issue. Please consult
+Math::Pari bugs on rt.cpan.org or open a bug there. There have
+been known issues on HP-UX and SunOS systems (with Math::Pari), 
+so if you are on those OSes, please consult Math::Pari 
+resources before opening a Crypt::RSA bug.
 
 =head1 BIBLIOGRAPHY
 
