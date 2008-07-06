@@ -22,6 +22,8 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 
+$Crypt::RSA::ES::PKCS1v15::VERSION = $Crypt::RSA::Version::VERSION;
+
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 

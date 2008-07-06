@@ -15,10 +15,13 @@ use lib "$Bin/../../lib";
 use strict;
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
+use Crypt::RSA::Version;
 use Crypt::RSA::Key;
 use Crypt::RSA::DataFormat qw(steak octet_len);
 use Convert::ASCII::Armour;
 use Carp;
+
+$Crypt::RSA::VERSION = $Crypt::RSA::Version::VERSION;
 
 my %DEFAULTS = ( 
     'ES'    => { Name  => 'OAEP_ES'    },

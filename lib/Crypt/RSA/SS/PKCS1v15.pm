@@ -22,6 +22,8 @@ use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
 
+$Crypt::RSA::SS::PKCS1v15::VERSION = $Crypt::RSA::Version::VERSION;
+
 sub new { 
 
     my ($class, %params) = @_;

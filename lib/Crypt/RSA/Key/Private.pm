@@ -19,6 +19,8 @@ use Data::Dumper;
 use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
 
+$Crypt::RSA::Key::Private::VERSION = $Crypt::RSA::Version::VERSION;
+
 sub new { 
 
     my ($class, %params) = @_; 

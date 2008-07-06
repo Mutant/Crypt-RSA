@@ -21,6 +21,8 @@ use Crypt::RSA::Version;
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 
+$Crypt::RSA::SS::PSS::VERSION = $Crypt::RSA::Version::VERSION;
+
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 

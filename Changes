@@ -3,6 +3,10 @@
 
 --------------------------------------------------------------------------
 
+1.96                                                          Jul 06, 2008
+
+ * Set the version numbers in modules to $Crypt::RSA::Version::VERSIOn 
+
 1.95                                                          Jul 06, 2008
 
  * Remove STDERR error output in Crypt::RSA::SS::PSS.
