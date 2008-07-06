@@ -9,7 +9,6 @@
 ## $Id: Debug.pm,v 1.9 2001/04/09 22:21:49 vipul Exp $
 
 package Crypt::RSA::Debug; 
-use lib qw(lib);
 use strict;
 use vars qw(@ISA @EXPORT_OK);
 require Exporter;

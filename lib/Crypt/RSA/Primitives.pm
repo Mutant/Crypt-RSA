@@ -10,14 +10,13 @@
 ## $Id: Primitives.pm,v 1.14 2001/06/22 23:27:35 vipul Exp $
 
 package Crypt::RSA::Primitives; 
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../lib";
 use strict;
-use vars qw(@ISA);
-use Crypt::RSA::Errorhandler;
+use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::Debug qw(debug);
 use Math::Pari qw(PARI Mod lift);
 use Carp;
-@ISA = qw(Crypt::RSA::Errorhandler);
 
 sub new { 
     return bless {}, shift; 

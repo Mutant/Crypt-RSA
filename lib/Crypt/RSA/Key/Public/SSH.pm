@@ -10,7 +10,8 @@
 
 package Crypt::RSA::Key::Public::SSH;
 use strict;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../../lib";
 use Crypt::RSA::DataFormat qw(bitsize);
 use Crypt::RSA::Key::Public;
 use vars qw(@ISA);

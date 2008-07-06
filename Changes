@@ -3,6 +3,27 @@
 
 --------------------------------------------------------------------------
 
+1.95                                                          Jul 06, 2008
+
+ * Remove STDERR error output in Crypt::RSA::SS::PSS.
+   (http://rt.cpan.org/Public/Bug/Display.html?id=29048)
+
+ * Allow symmetric cipher specification in Crypt::RSA::Key.
+   (http://rt.cpan.org/Public/Bug/Display.html?id=27929)
+
+ * Fix bug in AUTOLOAD. 
+   (http://rt.cpan.org/Public/Bug/Display.html?id=26028)
+
+ * Use Module::Install instead of ExtUtils::MakeMaker
+
+ * Consolidate versioning to module version in Crypt::RSA::Version 
+   (which is the reason for the version # jump)
+
+ * "use base" instead of @ISA 
+
+ * "use FindBin" instead of the literal "lib" - this is safer.
+
+
 1.58                                                          Dec 21, 2006
 
  * We turn on binmode() on filehandles when reading and writing

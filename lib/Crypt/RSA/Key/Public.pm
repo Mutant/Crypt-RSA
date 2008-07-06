@@ -9,21 +9,20 @@
 ## $Id: Public.pm,v 1.8 2001/09/25 14:11:23 vipul Exp $
 
 package Crypt::RSA::Key::Public;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../lib";
 use strict; 
 use vars qw($AUTOLOAD);
-use Crypt::RSA;
 use Carp;
 use Data::Dumper;
-use Crypt::RSA::Errorhandler;
+use base 'Crypt::RSA::Errorhandler';
 use Math::Pari qw(PARI pari2pv);
-use vars qw(@ISA);
-@ISA = qw(Crypt::RSA::Errorhandler);
+use Crypt::RSA::Version;
 
 sub new { 
 
     my ($class, %params) = @_; 
-    my $self    = { Version => $Crypt::RSA::Key::VERSION };
+    my $self    = { Version => $Crypt::RSA::Version::VERSION };
     if ($params{Filename}) { 
         bless $self, $class;
         $self = $self->read (%params);

@@ -9,27 +9,26 @@
 ## $Id: OAEP.pm,v 1.24 2001/06/22 23:27:37 vipul Exp $
 
 package Crypt::RSA::ES::OAEP; 
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../lib";
 use strict;
-use vars qw(@ISA $VERSION);
+use base 'Crypt::RSA::Errorhandler';
 use Crypt::Random          qw(makerandom_octet);
-use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::DataFormat qw(bitsize os2ip i2osp octet_xor mgf1 octet_len);
 use Crypt::RSA::Primitives;
+use Crypt::RSA::Version;
 use Crypt::RSA::Debug      qw(debug);
 use Digest::SHA1           qw(sha1);
 use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
-@ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.24 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 
                        P          => "",
                        hlen       => 20,
-                       VERSION    => $VERSION,
+                       VERSION    => $Crypt::RSA::Version::VERSION,
                       }, $class;
     if ($params{Version}) { 
         if (versioncmp($params{Version}, '1.15') == -1) { 

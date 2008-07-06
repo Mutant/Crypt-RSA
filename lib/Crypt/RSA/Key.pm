@@ -9,21 +9,16 @@
 ## $Id: Key.pm,v 1.13 2001/05/25 00:20:40 vipul Exp $
 
 package Crypt::RSA::Key; 
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../lib";
 use strict;
-use vars                   qw(@ISA $VERSION);
-use Class::Loader;
-use Crypt::RSA::Errorhandler;
+use base 'Class::Loader';
+use base 'Crypt::RSA::Errorhandler';
 use Crypt::Primes          qw(rsaparams);
 use Crypt::RSA::DataFormat qw(bitsize);
 use Math::Pari             qw(PARI Mod lift);
 use Crypt::RSA::Key::Private;
 use Crypt::RSA::Key::Public;
-@ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-
-
-($VERSION)  = '$Revision: 1.91 $' =~ /\s(\d+\.\d+)\s/; 
-
 
 my %MODMAP = ( 
     Native_PKF => { Module => "Crypt::RSA::Key::Public" },
@@ -79,7 +74,7 @@ sub generate {
 
     my $pubkey = $self->_load (%$pubload) || 
         return $self->error ("Couldn't load the public key module.");
-    my $prikey = $self->_load ((%$priload), Args => ['Password', $params{Password} ]) || 
+    my $prikey = $self->_load ((%$priload), Args => ['Cipher' => $params{Cipher}, 'Password', $params{Password} ]) || 
         return $self->error ("Couldn't load the private key module.");
     $pubkey->Identity ($params{Identity});
     $prikey->Identity ($params{Identity});

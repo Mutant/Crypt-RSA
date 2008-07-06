@@ -9,25 +9,23 @@
 ## $Id: PSS.pm,v 1.5 2001/06/22 23:27:38 vipul Exp $
 
 package Crypt::RSA::SS::PSS;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../lib";
 use strict;
-use vars qw(@ISA $VERSION);
-use Crypt::RSA::Errorhandler; 
+use base 'Crypt::RSA::Errorhandler';
 use Crypt::Random qw(makerandom_octet);
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor mgf1);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
+use Crypt::RSA::Version;
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
-@ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.5 $' =~ /\s(\d+\.\d+)\s/; 
-
 
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 
                        hlen       => 20,
-                       VERSION    => $VERSION,
+                       VERSION    => $Crypt::RSA::Version::VERSION,
                      }, $class;
     if ($params{Version}) { 
         # do versioning here
@@ -83,7 +81,6 @@ sub verify {
     my $em1 = i2osp ($m, $k-1) || 
         return $self->error ("Invalid signature.", \$M, \$S, $key, \%params);
     return 1 if $self->verify_with_salt_recovery ($M, $em1);
-    print $self->errstr; 
     return $self->error ("Invalid signature.", \$M, \$S, $key, \%params);
 }
 

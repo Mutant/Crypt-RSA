@@ -10,7 +10,6 @@
 ## $Id: DataFormat.pm,v 1.13 2001/05/20 23:37:45 vipul Exp $
 
 package Crypt::RSA::DataFormat; 
-use lib qw(lib);
 use vars qw(@ISA);
 use Math::Pari qw(PARI pari2pv floor pari2num);
 use Crypt::Random qw(makerandom);

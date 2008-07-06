@@ -9,20 +9,18 @@
 ## $Id: PKCS1v15.pm,v 1.6 2001/06/22 23:27:38 vipul Exp $
 
 package Crypt::RSA::SS::PKCS1v15;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../lib";
 use strict;
-use vars qw(@ISA $VERSION);
-use Crypt::RSA::Errorhandler; 
+use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp h2osp);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
+use Crypt::RSA::Version;
 use Digest::SHA1 qw(sha1);
 use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
-@ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.6 $' =~ /\s(\d+\.\d+)\s/; 
-
 
 sub new { 
 
@@ -38,7 +36,7 @@ sub new {
                                        SHA1 => "0x 30 21 30 09 06 05 2B 0E 03
                                                    02 1A 05 00 04 14",
                                      },
-                       VERSION    => $VERSION,
+                       VERSION    => $Crypt::RSA::Version::VERSION,
                      }, $class;           
     if ($params{Version}) { 
         # do versioning here

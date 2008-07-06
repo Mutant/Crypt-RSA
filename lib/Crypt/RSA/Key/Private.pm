@@ -9,20 +9,15 @@
 ## $Id: Private.pm,v 1.15 2001/09/25 14:11:22 vipul Exp $
 
 package Crypt::RSA::Key::Private;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../lib";
 use strict; 
 use vars qw($AUTOLOAD $VERSION);
-use Crypt::RSA::Errorhandler;
-use Crypt::RSA;
+use base 'Crypt::RSA::Errorhandler';
 use Tie::EncryptedHash; 
 use Data::Dumper;
 use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
-use vars qw(@ISA);
-
-($VERSION) = '$Revision: 1.15 $' =~ /\s(\d+\.\d+)\s/; 
-@ISA       = qw(Crypt::RSA::Errorhandler);
-
 
 sub new { 
 
@@ -54,8 +49,8 @@ sub AUTOLOAD {
         } elsif ($value && !(ref $value)) { 
             if ($value =~ /^0x/) { 
                 $self->{private}->{"_$key"} = 
-                $self->{Checked} = 0;
                     Math::Pari::_hex_cvt($value);
+                $self->{Checked} = 0;
             } else { $self->{private}{"_$key"} = PARI($value) } 
         }
         return $self->{private}{"_$key"} || 

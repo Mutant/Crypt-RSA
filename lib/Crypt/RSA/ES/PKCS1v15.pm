@@ -9,24 +9,23 @@
 ## $Id: PKCS1v15.pm,v 1.10 2001/06/22 23:27:37 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../lib";
 use strict;
-use vars qw(@ISA $VERSION);
+use base 'Crypt::RSA::Errorhandler';
+use Crypt::RSA::Version;
 use Crypt::Random          qw(makerandom_octet);
-use Crypt::RSA::Errorhandler; 
 use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug      qw(debug);
 use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
-@ISA = qw(Crypt::RSA::Errorhandler);
-($VERSION)  = '$Revision: 1.91 $' =~ /\s(\d+\.\d+)\s/; 
 
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 
-                       VERSION    => $VERSION,
+                       VERSION    => $Crypt::RSA::Version::VERSION,
                       }, $class;
     if ($params{Version}) { 
         # do versioning here.

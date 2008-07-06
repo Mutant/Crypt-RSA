@@ -8,26 +8,29 @@
 ##
 ## $Id: Makefile.PL,v 1.12 2001/05/30 13:10:32 vipul Exp $
 
-use ExtUtils::MakeMaker;
-WriteMakefile(
-    'NAME'         => 'Crypt::RSA',
-    'AUTHOR'       => 'Vipul Ved Prakash <mail@vipul.net>',
-    'VERSION_FROM' => 'lib/Crypt/RSA.pm',
-    'PREREQ_PM'    => { 
-                        'Math::Pari'             => '2.001804', 
-                        'Crypt::Random'          => '0.34', 
-                        'Crypt::Primes'          => '0.38',
-                        'Crypt::CBC'             =>  0, 
-                        'Crypt::Blowfish'        =>  0,
-                        'Data::Dumper'           =>  0,
-                        'Tie::EncryptedHash'     =>  0,
-                        'Convert::ASCII::Armour' =>  0,
-                        'Sort::Versions'         =>  0,
-                        'Digest::SHA1'           =>  0,
-                        'Digest::MD5'            =>  0,
-                        'Digest::MD2'            =>  0,
-                        'Class::Loader'          =>  '2.00',
-                        'Data::Buffer'           =>  0,
-                      } 
-);
+use inc::Module::Install;
+
+name            'Crypt-RSA';
+abstract_from   'lib/Crypt/RSA.pm';
+author          'Vipul Ved Prakash <mail@vipul.net>';
+license         'perl';
+version_from    'lib/Crypt/RSA/Version.pm';
+perl_version    '5.006';
+
+requires        'Math::Pari'            => '2.001804';
+requires        'Crypt::Random'         => '0.34';
+requires        'Crypt::Primes'         => '0.38';
+requires        'Crypt::CBC'            => 0;
+requires        'Crypt::Blowfish'       => 0;
+requires        'Data::Dumper'          => 0; 
+requires        'Tie::EncryptedHash'    => 0;
+requires        'Convert::ASCII::Armour'=> 0;
+requires        'Sort::Versions'        => 0;
+requires        'Digest::SHA1'          => 0;
+requires        'Digest::MD5'           => 0;
+requires        'Digest::MD2'           => 0;
+requires        'Class::Loader'         => '2.00';
+requires        'Data::Buffer'          => 0; 
+
+WriteAll;
 

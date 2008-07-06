@@ -10,19 +10,15 @@
 ## $Id: RSA.pm,v 1.48 2001/09/25 12:44:55 vipul Exp $
 
 package Crypt::RSA;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../lib";
 use strict;
-use vars qw(@ISA $VERSION);
-use Class::Loader;
-use Crypt::RSA::Errorhandler; 
+use base 'Class::Loader';
+use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::Key;
 use Crypt::RSA::DataFormat qw(steak octet_len);
 use Convert::ASCII::Armour;
 use Carp;
-
-@ISA = qw(Class::Loader Crypt::RSA::Errorhandler);
-($VERSION) = '$Revision: 1.58 $' =~ /\s(\d+\.\d+)\s/; 
-
 
 my %DEFAULTS = ( 
     'ES'    => { Name  => 'OAEP_ES'    },
@@ -211,11 +207,6 @@ sub blocksize {
 =head1 NAME
 
 Crypt::RSA - RSA public-key cryptosystem.
-
-=head1 VERSION
-
- $Revision: 1.48 $ (Beta)
- $Date: 2001/09/25 12:44:55 $
 
 =head1 SYNOPSIS
 
@@ -544,9 +535,8 @@ for good advice.
 
 =head1 LICENSE 
 
-Copyright (c) 2000-2005, Vipul Ved Prakash. All rights reserved.
-This code is free software; it is distributed under a
-disjunctive Artistic/GPL license, like Perl itself.
+Copyright (c) 2000-2008, Vipul Ved Prakash. This code is free software;
+it is distributed under the same license as Perl itself.
 
 I have received requests for commercial licenses of
 Crypt::RSA, from those who desire contractual support and
@@ -623,5 +613,3 @@ http://www.faqs.org/faqs/cryptography-faq/part01/index.html
 =item 16 B<Victor Shoup.> A Proposal for an ISO Standard for Public Key Encryption (2001).
 
 =cut
-
-

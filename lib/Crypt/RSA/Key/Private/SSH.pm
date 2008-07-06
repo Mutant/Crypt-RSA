@@ -9,7 +9,8 @@
 ## $Id: SSH.pm,v 1.1 2001/05/20 23:37:47 vipul Exp $
 
 package Crypt::RSA::Key::Private::SSH::Buffer;
-use lib qw(lib);
+use FindBin qw($Bin);
+use lib "$Bin/../../../../../lib";
 use strict;
 use Crypt::RSA::DataFormat qw( os2ip bitsize i2osp );
 use Data::Buffer;
@@ -35,8 +36,9 @@ sub put_mp_int {
 
 
 package Crypt::RSA::Key::Private::SSH;
+use FindBin qw($Bin);
+use lib "$Bin/../../../../../lib";
 use strict;
-use lib qw(lib);
 use constant PRIVKEY_ID => "SSH PRIVATE KEY FILE FORMAT 1.1\n";
 use vars qw( %CIPHERS );
 
