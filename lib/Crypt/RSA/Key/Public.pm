@@ -17,12 +17,13 @@ use Carp;
 use Data::Dumper;
 use base 'Crypt::RSA::Errorhandler';
 use Math::Pari qw(PARI pari2pv);
-use Crypt::RSA::Version;
+
+$Crypt::RSA::Key::Public::VERSION = '1.97';
 
 sub new { 
 
     my ($class, %params) = @_; 
-    my $self    = { Version => $Crypt::RSA::Version::VERSION };
+    my $self    = { Version => $Crypt::RSA::Key::Public::VERSION };
     if ($params{Filename}) { 
         bless $self, $class;
         $self = $self->read (%params);

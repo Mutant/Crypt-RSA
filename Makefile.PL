@@ -14,7 +14,7 @@ name            'Crypt-RSA';
 abstract_from   'lib/Crypt/RSA.pm';
 author          'Vipul Ved Prakash <mail@vipul.net>';
 license         'perl';
-version_from    'lib/Crypt/RSA/Version.pm';
+version_from    'lib/Crypt/RSA.pm';
 perl_version    '5.006';
 
 requires        'Math::Pari'            => '2.001804';

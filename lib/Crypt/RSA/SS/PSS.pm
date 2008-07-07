@@ -17,17 +17,16 @@ use Crypt::Random qw(makerandom_octet);
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp octet_xor mgf1);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
-use Crypt::RSA::Version;
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 
-$Crypt::RSA::SS::PSS::VERSION = $Crypt::RSA::Version::VERSION;
+$Crypt::RSA::SS::PSS::VERSION = '1.97';
 
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 
                        hlen       => 20,
-                       VERSION    => $Crypt::RSA::Version::VERSION,
+                       VERSION    => $Crypt::RSA::SS::PSS::VERSION,
                      }, $class;
     if ($params{Version}) { 
         # do versioning here

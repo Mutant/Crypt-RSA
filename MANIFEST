@@ -25,9 +25,9 @@ lib/Crypt/RSA/Key/Public/SSH.pm
 lib/Crypt/RSA/Primitives.pm
 lib/Crypt/RSA/SS/PKCS1v15.pm
 lib/Crypt/RSA/SS/PSS.pm
-lib/Crypt/RSA/Version.pm
 Makefile.PL
 MANIFEST			This list of files
+MANIFEST.skip
 META.yml
 README
 t/00-errorhandler.t

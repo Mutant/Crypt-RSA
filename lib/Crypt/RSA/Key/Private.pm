@@ -19,12 +19,12 @@ use Data::Dumper;
 use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
 
-$Crypt::RSA::Key::Private::VERSION = $Crypt::RSA::Version::VERSION;
+$Crypt::RSA::Key::Private::VERSION = '1.97'; 
 
 sub new { 
 
     my ($class, %params) = @_; 
-    my $self    = { Version => $Crypt::RSA::Key::VERSION };
+    my $self    = { Version => $Crypt::RSA::Key::Private::VERSION };
     if ($params{Filename}) { 
         bless $self, $class;
         $self = $self->read (%params);

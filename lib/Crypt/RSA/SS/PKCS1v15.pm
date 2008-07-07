@@ -16,13 +16,12 @@ use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp h2osp);
 use Crypt::RSA::Primitives;
 use Crypt::RSA::Debug qw(debug);
-use Crypt::RSA::Version;
 use Digest::SHA1 qw(sha1);
 use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
 
-$Crypt::RSA::SS::PKCS1v15::VERSION = $Crypt::RSA::Version::VERSION;
+$Crypt::RSA::SS::PKCS1v15::VERSION = '1.97';
 
 sub new { 
 
@@ -38,7 +37,7 @@ sub new {
                                        SHA1 => "0x 30 21 30 09 06 05 2B 0E 03
                                                    02 1A 05 00 04 14",
                                      },
-                       VERSION    => $Crypt::RSA::Version::VERSION,
+                       VERSION    => $Crypt::RSA::SS::PKCS1v15::VERSION,
                      }, $class;           
     if ($params{Version}) { 
         # do versioning here

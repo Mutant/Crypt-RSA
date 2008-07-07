@@ -13,7 +13,6 @@ use FindBin qw($Bin);
 use lib "$Bin/../../../../lib";
 use strict;
 use base 'Crypt::RSA::Errorhandler';
-use Crypt::RSA::Version;
 use Crypt::Random          qw(makerandom_octet);
 use Crypt::RSA::DataFormat qw(bitsize octet_len os2ip i2osp);
 use Crypt::RSA::Primitives;
@@ -22,12 +21,12 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 
-$Crypt::RSA::ES::PKCS1v15::VERSION = $Crypt::RSA::Version::VERSION;
+$Crypt::RSA::ES::PKCS1v15::VERSION = '1.97';
 
 sub new { 
     my ($class, %params) = @_;
     my $self = bless { primitives => new Crypt::RSA::Primitives, 
-                       VERSION    => $Crypt::RSA::Version::VERSION,
+                       VERSION    => $Crypt::RSA::ES::PKCS1v15::VERSION,
                       }, $class;
     if ($params{Version}) { 
         # do versioning here.
