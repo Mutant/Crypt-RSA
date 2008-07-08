@@ -20,7 +20,7 @@ use Math::Pari             qw(PARI Mod lift);
 use Crypt::RSA::Key::Private;
 use Crypt::RSA::Key::Public;
 
-$Crypt::RSA::Key::VERSION = '1.97';
+$Crypt::RSA::Key::VERSION = '1.98';
 
 my %MODMAP = ( 
     Native_PKF => { Module => "Crypt::RSA::Key::Public" },

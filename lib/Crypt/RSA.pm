@@ -20,7 +20,7 @@ use Crypt::RSA::DataFormat qw(steak octet_len);
 use Convert::ASCII::Armour;
 use Carp;
 
-$Crypt::RSA::VERSION = '1.97';  # change this elsewhere too!
+$Crypt::RSA::VERSION = '1.98';  # change this elsewhere too!
 
 my %DEFAULTS = ( 
     'ES'    => { Name  => 'OAEP_ES'    },

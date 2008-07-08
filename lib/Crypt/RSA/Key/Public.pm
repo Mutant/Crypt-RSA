@@ -18,7 +18,7 @@ use Data::Dumper;
 use base 'Crypt::RSA::Errorhandler';
 use Math::Pari qw(PARI pari2pv);
 
-$Crypt::RSA::Key::Public::VERSION = '1.97';
+$Crypt::RSA::Key::Public::VERSION = '1.98';
 
 sub new { 
 
@@ -79,7 +79,7 @@ sub write {
     my ($self, %params) = @_; 
     $self->hide();
     my $string = $self->serialize (%params); 
-    open DISK, ">$params{Filename}" || 
+    open DISK, ">$params{Filename}" or
         croak "Can't open $params{Filename} for writing.";
     binmode DISK;
     print DISK $string;

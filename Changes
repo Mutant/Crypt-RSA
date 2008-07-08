@@ -3,6 +3,13 @@
 
 --------------------------------------------------------------------------
 
+
+1.98                                                          Jul 08, 2008
+
+ * Precedence bug in Public::write() and Private::write()
+   (http://rt.cpan.org/Public/Bug/Display.html?id=37489)
+   Thanks to HRAFNKELL for reporting this!
+
 1.96                                                          Jul 06, 2008
 
  * Set the version numbers in modules to $Crypt::RSA::Version::VERSIOn 

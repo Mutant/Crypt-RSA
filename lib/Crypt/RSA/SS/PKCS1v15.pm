@@ -21,7 +21,7 @@ use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
 
-$Crypt::RSA::SS::PKCS1v15::VERSION = '1.97';
+$Crypt::RSA::SS::PKCS1v15::VERSION = '1.98';
 
 sub new { 
 

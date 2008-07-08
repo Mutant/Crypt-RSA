@@ -22,7 +22,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 
-$Crypt::RSA::ES::OAEP::VERSION = '1.97';
+$Crypt::RSA::ES::OAEP::VERSION = '1.98';
 
 sub new { 
     my ($class, %params) = @_;

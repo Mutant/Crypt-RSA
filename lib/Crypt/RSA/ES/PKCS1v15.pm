@@ -21,7 +21,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 
-$Crypt::RSA::ES::PKCS1v15::VERSION = '1.97';
+$Crypt::RSA::ES::PKCS1v15::VERSION = '1.98';
 
 sub new { 
     my ($class, %params) = @_;

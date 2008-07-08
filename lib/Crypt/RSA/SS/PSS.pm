@@ -20,7 +20,7 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 
-$Crypt::RSA::SS::PSS::VERSION = '1.97';
+$Crypt::RSA::SS::PSS::VERSION = '1.98';
 
 sub new { 
     my ($class, %params) = @_;
