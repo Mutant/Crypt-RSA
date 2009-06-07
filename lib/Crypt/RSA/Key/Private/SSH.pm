@@ -9,8 +9,6 @@
 ## $Id: SSH.pm,v 1.1 2001/05/20 23:37:47 vipul Exp $
 
 package Crypt::RSA::Key::Private::SSH::Buffer;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../../lib";
 use strict;
 use Crypt::RSA::DataFormat qw( os2ip bitsize i2osp );
 use Data::Buffer;

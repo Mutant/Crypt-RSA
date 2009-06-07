@@ -8,8 +8,8 @@
 ##
 ## $Id: 06-oaep.t,v 1.3 2001/04/06 18:33:31 vipul Exp $
 
-use lib '../lib';
-use lib 'lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::ES::OAEP;
 use Crypt::RSA::Key;
 

@@ -8,8 +8,8 @@
 ##
 ## $Id: 13-es-pkcs1v15.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
-use lib '../lib';
-use lib 'lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::ES::PKCS1v15;
 use Crypt::RSA::Key;
 use Crypt::RSA::Key::Public;

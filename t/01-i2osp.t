@@ -8,7 +8,8 @@
 ##
 ## $Id: 01-i2osp.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
-use lib '../lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::DataFormat qw(i2osp os2ip);
 use Crypt::RSA::Debug qw(debug);
 use Math::Pari qw(PARI);

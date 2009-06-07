@@ -8,8 +8,8 @@
 ##
 ## $Id$
 
-use lib '../lib';
-use lib 'lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::Key::Private;
 use Math::Pari qw(PARI);
 use Data::Dumper;

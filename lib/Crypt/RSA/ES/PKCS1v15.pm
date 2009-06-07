@@ -9,8 +9,6 @@
 ## $Id: PKCS1v15.pm,v 1.10 2001/06/22 23:27:37 vipul Exp $
 
 package Crypt::RSA::ES::PKCS1v15;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../lib";
 use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::Random          qw(makerandom_octet);
@@ -21,7 +19,7 @@ use Math::Pari             qw(floor);
 use Sort::Versions         qw(versioncmp);
 use Carp;
 
-$Crypt::RSA::ES::PKCS1v15::VERSION = '1.98';
+$Crypt::RSA::ES::PKCS1v15::VERSION = '1.99';
 
 sub new { 
     my ($class, %params) = @_;
@@ -38,6 +36,7 @@ sub new {
 sub encrypt { 
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
+    return $self->error ("No Message or Plaintext parameter", \$key, \%params) unless $M;
     return $self->error ($key->errstr, \$M, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);  debug ("octet_len of modulus: $k");
     my $em = $self->encode ($M, $k-1) || 
@@ -53,6 +52,7 @@ sub encrypt {
 sub decrypt { 
     my ($self, %params) = @_;
     my $key = $params{Key}; my $C = $params{Cyphertext} || $params{Ciphertext};
+    return $self->error ("No Cyphertext or Ciphertext parameter", \$key, \%params) unless $C;
     return $self->error ($key->errstr, $key, \%params) unless $key->check;
     my $k = octet_len ($key->n);
     my $c = os2ip ($C);

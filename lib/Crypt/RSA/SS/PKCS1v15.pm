@@ -9,8 +9,6 @@
 ## $Id: PKCS1v15.pm,v 1.6 2001/06/22 23:27:38 vipul Exp $
 
 package Crypt::RSA::SS::PKCS1v15;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../lib";
 use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::DataFormat qw(octet_len os2ip i2osp h2osp);
@@ -21,7 +19,7 @@ use Digest::MD5 qw(md5);
 use Digest::MD2 qw(md2);
 use Math::Pari qw(floor);
 
-$Crypt::RSA::SS::PKCS1v15::VERSION = '1.98';
+$Crypt::RSA::SS::PKCS1v15::VERSION = '1.99';
 
 sub new { 
 
@@ -51,6 +49,8 @@ sub sign {
 
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
+    return $self->error ("No Message or Plaintext parameter", \$key, \%params) unless $M;
+    return $self->error ("No Key parameter", \$M, \%params) unless $key;
     my $k = octet_len ($key->n);
 
     my $em; 
@@ -73,6 +73,9 @@ sub verify {
     my ($self, %params) = @_;
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
     my $S = $params{Signature}; 
+    return $self->error ("No Message or Plaintext parameter", \$key, \%params) unless $M;
+    return $self->error ("No Key parameter", \$M, \$S, \%params) unless $key;
+    return $self->error ("No Signature parameter", \$key, \$M, \%params) unless $S;
     my $k = octet_len ($key->n);
     return $self->error ("Invalid signature.", \$key, \$M, \%params) if length($S) != $k;
     my $s = os2ip ($S);

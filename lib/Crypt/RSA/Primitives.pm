@@ -10,8 +10,6 @@
 ## $Id: Primitives.pm,v 1.14 2001/06/22 23:27:35 vipul Exp $
 
 package Crypt::RSA::Primitives; 
-use FindBin qw($Bin);
-use lib "$Bin/../../../lib";
 use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::RSA::Debug qw(debug);

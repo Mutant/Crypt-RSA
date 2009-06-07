@@ -8,7 +8,8 @@
 ##
 ## $Id: 03-random_octet.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
-use lib '../lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA; 
 use Crypt::Random qw(makerandom_octet);
 

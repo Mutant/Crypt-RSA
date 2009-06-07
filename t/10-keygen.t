@@ -8,8 +8,8 @@
 ##
 ## $Id: 10-keygen.t,v 1.1 2001/04/06 18:33:31 vipul Exp $
 
-use lib '../lib';
-use lib 'lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::Key;
 use Data::Dumper;
 

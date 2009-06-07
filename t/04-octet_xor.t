@@ -6,7 +6,8 @@
 ##
 ## $Id: 04-octet_xor.t,v 1.1 2001/02/19 20:22:21 vipul Exp $
 
-use lib '../lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::DataFormat qw(octet_xor);
 use Data::Dumper;
 

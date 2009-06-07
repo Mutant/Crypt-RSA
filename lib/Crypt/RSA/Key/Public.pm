@@ -9,8 +9,6 @@
 ## $Id: Public.pm,v 1.8 2001/09/25 14:11:23 vipul Exp $
 
 package Crypt::RSA::Key::Public;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../lib";
 use strict; 
 use vars qw($AUTOLOAD);
 use Carp;
@@ -18,7 +16,7 @@ use Data::Dumper;
 use base 'Crypt::RSA::Errorhandler';
 use Math::Pari qw(PARI pari2pv);
 
-$Crypt::RSA::Key::Public::VERSION = '1.98';
+$Crypt::RSA::Key::Public::VERSION = '1.99';
 
 sub new { 
 

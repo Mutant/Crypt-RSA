@@ -8,8 +8,8 @@
 ##
 ## $Id: 11-wrapper.t,v 1.2 2001/04/17 19:53:23 vipul Exp $
 
-use lib '../lib';
-use lib 'lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA;
 use Crypt::RSA::Debug qw(debuglevel);
 

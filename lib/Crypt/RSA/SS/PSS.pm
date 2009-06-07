@@ -9,8 +9,6 @@
 ## $Id: PSS.pm,v 1.5 2001/06/22 23:27:38 vipul Exp $
 
 package Crypt::RSA::SS::PSS;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../lib";
 use strict;
 use base 'Crypt::RSA::Errorhandler';
 use Crypt::Random qw(makerandom_octet);
@@ -20,7 +18,7 @@ use Crypt::RSA::Debug qw(debug);
 use Digest::SHA1 qw(sha1);
 use Math::Pari qw(floor);
 
-$Crypt::RSA::SS::PSS::VERSION = '1.98';
+$Crypt::RSA::SS::PSS::VERSION = '1.99';
 
 sub new { 
     my ($class, %params) = @_;
@@ -38,6 +36,8 @@ sub new {
 sub sign { 
     my ($self, %params) = @_; 
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
+    return $self->error("No Key parameter", \$M, \%params) unless $key;
+    return $self->error("No Message or Plaintext parameter", \$key, \%params) unless $M;
     my $k = octet_len ($key->n);
     my $salt = makerandom_octet (Length => $self->{hlen});
     my $em = $self->encode ($M, $salt, $k-1);
@@ -53,6 +53,8 @@ sub verify_with_salt {
     my ($self, %params) = @_;
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext};
     my $S = $params{Signature}; my $salt = $params{Salt};
+    return $self->error("No Key parameter", \$S, \%params) unless $key;
+    return $self->error("No Signature parameter", \$key, \%params) unless $S;
     my $k = octet_len ($key->n);
     my $em; 
     unless ($em = $self->encode ($M, $salt, $k-1)) { 
@@ -75,6 +77,9 @@ sub verify {
     my ($self, %params) = @_;
     my $key = $params{Key}; my $M = $params{Message} || $params{Plaintext}; 
     my $S = $params{Signature}; 
+    return $self->error("No Key parameter", \$S, \$M, \%params) unless $key;
+    return $self->error("No Signature parameter", \$key, \$M, \%params) unless $S;
+    return $self->error("No Message or Plaintext parameter", \$key, \$S, \%params) unless $M;
     my $k = octet_len ($key->n);
     my $s = os2ip ($S);
     my $m = $self->{primitives}->core_verify (Key => $key, Signature => $s) || 

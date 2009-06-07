@@ -9,8 +9,6 @@
 ## $Id: Private.pm,v 1.15 2001/09/25 14:11:22 vipul Exp $
 
 package Crypt::RSA::Key::Private;
-use FindBin qw($Bin);
-use lib "$Bin/../../../../lib";
 use strict; 
 use vars qw($AUTOLOAD $VERSION);
 use base 'Crypt::RSA::Errorhandler';
@@ -19,7 +17,7 @@ use Data::Dumper;
 use Math::Pari qw(PARI pari2pv Mod isprime lcm lift);
 use Carp;
 
-$Crypt::RSA::Key::Private::VERSION = '1.98'; 
+$Crypt::RSA::Key::Private::VERSION = '1.99'; 
 
 sub new { 
 

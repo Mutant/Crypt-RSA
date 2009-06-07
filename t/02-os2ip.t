@@ -8,7 +8,8 @@
 ##
 ## $Id: 02-os2ip.t,v 1.1 2001/02/19 20:22:21 vipul Exp $
 
-use lib '../lib';
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
 use Crypt::RSA::DataFormat qw(i2osp os2ip);
 use Math::Pari qw(PARI);
 

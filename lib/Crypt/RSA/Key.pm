@@ -9,8 +9,6 @@
 ## $Id: Key.pm,v 1.13 2001/05/25 00:20:40 vipul Exp $
 
 package Crypt::RSA::Key; 
-use FindBin qw($Bin);
-use lib "$Bin/../../../lib";
 use strict;
 use base 'Class::Loader';
 use base 'Crypt::RSA::Errorhandler';
@@ -20,7 +18,7 @@ use Math::Pari             qw(PARI Mod lift);
 use Crypt::RSA::Key::Private;
 use Crypt::RSA::Key::Public;
 
-$Crypt::RSA::Key::VERSION = '1.98';
+$Crypt::RSA::Key::VERSION = '1.99';
 
 my %MODMAP = ( 
     Native_PKF => { Module => "Crypt::RSA::Key::Public" },

@@ -10,8 +10,6 @@
 ## $Id: Errorhandler.pm,v 1.5 2001/06/22 23:27:35 vipul Exp $
 
 package Crypt::RSA::Errorhandler; 
-use FindBin qw($Bin);
-use lib "$Bin/../../../lib";
 use strict;
 
 sub new { 
